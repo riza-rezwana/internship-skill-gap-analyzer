@@ -30,6 +30,25 @@ const showCertificateResult = async (req, res) => {
   }
 };
 
+const showCertificateViewer = async (req, res) => {
+  try {
+    const id = parseInt(req.params.id);
+
+    const certificate = await prisma.certificate.findUnique({
+      where: { id }
+    });
+
+    if (!certificate) {
+      return res.status(404).send("Certificate not found");
+    }
+
+    res.render("certificateViewer", { certificate });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Something went wrong while loading the certificate");
+  }
+};
+
 const uploadCertificate = async (req, res) => {
   try {
     const { studentName, companyName, durationMonths } = req.body;
@@ -63,5 +82,6 @@ const uploadCertificate = async (req, res) => {
 module.exports = {
   showCertificateForm,
   uploadCertificate,
-  showCertificateResult
+  showCertificateResult,
+  showCertificateViewer
 };
