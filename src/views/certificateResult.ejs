@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Certificate Result</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Certificate Published Successfully</h1>
+
+    <div class="card">
+      <p><strong>Student Name:</strong> <%= certificate.studentName %></p>
+      <p><strong>Company Name:</strong> <%= certificate.companyName %></p>
+      <p><strong>Internship Duration:</strong> <%= certificate.durationMonths %> month(s)</p>
+      <p><strong>Practical Experience Rating:</strong> <%= certificate.experienceRating %>/5</p>
+
+      <p class="stars">
+        <% for(let i = 1; i <= 5; i++) { %>
+          <% if(i <= certificate.experienceRating) { %>
+            <span>★</span>
+          <% } else { %>
+            <span class="empty-star">☆</span>
+          <% } %>
+        <% } %>
+      </p>
+
+      <p>
+        <a class="btn" href="<%= certificate.certificateFile %>" target="_blank">View Certificate</a>
+      </p>
+    </div>
+
+    <a class="btn" href="/certificates">Upload Another Certificate</a>
+    <a class="back-link" href="/">Back to Home</a>
+  </div>
+</body>
+</html>
