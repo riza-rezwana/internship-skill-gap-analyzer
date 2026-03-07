@@ -3,10 +3,12 @@ const router = express.Router();
 const upload = require("../config/multer");
 const {
   showCertificateForm,
-  uploadCertificate
+  uploadCertificate,
+  showCertificateResult
 } = require("../controllers/certificateController");
 
 router.get("/", showCertificateForm);
 router.post("/upload", upload.single("certificate"), uploadCertificate);
+router.get("/result/:id", showCertificateResult);
 
 module.exports = router;
