@@ -1,3 +1,7 @@
+// prisma/schema.prisma
+// CSE471 - Module 1, Member 4 | Skill Gap Dashboard
+// Group 08 - Wasif Mahtab Hannan
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,12 +11,69 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Certificate {
-  id               Int      @id @default(autoincrement())
-  studentName      String
-  companyName      String
-  certificateFile  String
-  durationMonths   Int
-  experienceRating Int
-  createdAt        DateTime @default(now())
+// ─── STUDENT ─────────────────────────────────────────────────────────────────
+model Student {
+  id         Int      @id @default(autoincrement())
+  name       String
+  email      String   @unique
+  department String
+  semester   Int
+  createdAt  DateTime @default(now())
+
+  // Relations
+  skills     StudentSkill[]
+}
+
+// ─── SKILL ───────────────────────────────────────────────────────────────────
+model Skill {
+  id          Int    @id @default(autoincrement())
+  name        String @unique
+  category    String // e.g. "Programming", "Database", "Framework"
+
+  // Relations
+  studentSkills         StudentSkill[]
+  internshipRequirements InternshipSkillRequirement[]
+}
+
+// ─── STUDENT SKILL ───────────────────────────────────────────────────────────
+// Stores how good a student is at a skill (1 = beginner, 5 = expert)
+model StudentSkill {
+  id        Int @id @default(autoincrement())
+  level     Int // 1 to 5
+
+  studentId Int
+  skillId   Int
+
+  student   Student @relation(fields: [studentId], references: [id])
+  skill     Skill   @relation(fields: [skillId], references: [id])
+
+  @@unique([studentId, skillId]) // one skill per student
+}
+
+// ─── INTERNSHIP ──────────────────────────────────────────────────────────────
+model Internship {
+  id          Int    @id @default(autoincrement())
+  title       String
+  company     String
+  location    String
+  type        String // "Remote" or "On-site"
+  description String @db.Text
+
+  // Relations
+  skillRequirements InternshipSkillRequirement[]
+}
+
+// ─── INTERNSHIP SKILL REQUIREMENT ────────────────────────────────────────────
+// Stores what level of a skill an internship requires (1 to 5)
+model InternshipSkillRequirement {
+  id            Int @id @default(autoincrement())
+  requiredLevel Int // 1 to 5
+
+  internshipId  Int
+  skillId       Int
+
+  internship    Internship @relation(fields: [internshipId], references: [id])
+  skill         Skill      @relation(fields: [skillId], references: [id])
+
+  @@unique([internshipId, skillId]) // one requirement per skill per internship
 }

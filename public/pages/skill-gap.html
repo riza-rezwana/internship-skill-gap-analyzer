@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Skill Gap Dashboard | InternTrack</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="../css/skill-gap.css"/>
+</head>
+<body>
+
+<!-- ═══════════════════════ NAVBAR ═══════════════════════ -->
+<nav class="navbar">
+  <div class="nav-inner">
+    <div class="nav-brand">
+      <span class="brand-dot"></span>
+      InternTrack
+    </div>
+    <div class="nav-links">
+      <a href="#">Dashboard</a>
+      <a href="#" class="active">Skill Gap</a>
+      <a href="#">Internships</a>
+    </div>
+    <div class="nav-user">
+      <div class="user-avatar" id="userAvatar">W</div>
+      <span id="userName">Loading...</span>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══════════════════════ MAIN ═══════════════════════ -->
+<main class="main">
+
+  <!-- PAGE HEADER -->
+  <div class="page-header fade-in">
+    <div>
+      <h1 class="page-title">Skill Gap <span class="highlight">Dashboard</span></h1>
+      <p class="page-sub">See exactly how ready you are for any internship — and what to improve.</p>
+    </div>
+  </div>
+
+  <!-- CONTROLS BAR -->
+  <div class="controls-bar fade-in">
+    <div class="control-group">
+      <label class="control-label">Student</label>
+      <select id="studentSelect" class="select-box" onchange="loadDashboard()">
+        <option value="1">Wasif Mahtab Hannan</option>
+        <option value="2">Tayeba Tabassum Mridula</option>
+        <option value="3">Md Nayeem Shahriar</option>
+      </select>
+    </div>
+    <div class="control-arrow">→</div>
+    <div class="control-group">
+      <label class="control-label">Internship</label>
+      <select id="internshipSelect" class="select-box" onchange="loadDashboard()">
+        <!-- filled by JS -->
+      </select>
+    </div>
+    <div class="readiness-pill" id="readinessPill">
+      <span class="pill-label">Readiness</span>
+      <span class="pill-value" id="pillValue">—</span>
+    </div>
+  </div>
+
+  <!-- STUDENT CARD -->
+  <div class="student-card fade-in" id="studentCard">
+    <div class="student-avatar" id="cardAvatar">W</div>
+    <div class="student-info">
+      <div class="student-name" id="cardName">—</div>
+      <div class="student-meta">
+        <span id="cardDept">—</span>
+        <span class="sep">·</span>
+        <span id="cardSem">—</span>
+      </div>
+    </div>
+    <div class="internship-badge">
+      <span class="badge-label">Applying for</span>
+      <span class="badge-value" id="cardInternship">—</span>
+    </div>
+  </div>
+
+  <!-- SUMMARY STAT CARDS -->
+  <div class="stats-grid fade-in">
+    <div class="stat-card readiness-card">
+      <div class="stat-icon">🎯</div>
+      <div class="stat-body">
+        <div class="stat-label">Readiness Score</div>
+        <div class="stat-value" id="statReadiness">—</div>
+      </div>
+      <div class="readiness-ring">
+        <svg viewBox="0 0 36 36" class="ring-svg" id="ringSvg">
+          <path class="ring-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+          <path class="ring-fill" id="ringFill" stroke-dasharray="0, 100" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+        </svg>
+      </div>
+    </div>
+    <div class="stat-card matched-card">
+      <div class="stat-icon">✅</div>
+      <div class="stat-body">
+        <div class="stat-label">Matched Skills</div>
+        <div class="stat-value green" id="statMatched">—</div>
+      </div>
+    </div>
+    <div class="stat-card weak-card">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-body">
+        <div class="stat-label">Weak Skills</div>
+        <div class="stat-value yellow" id="statWeak">—</div>
+      </div>
+    </div>
+    <div class="stat-card missing-card">
+      <div class="stat-icon">❌</div>
+      <div class="stat-body">
+        <div class="stat-label">Missing Skills</div>
+        <div class="stat-value red" id="statMissing">—</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- READINESS PROGRESS BAR -->
+  <div class="progress-section fade-in">
+    <div class="progress-header">
+      <span class="progress-label">Overall Internship Readiness</span>
+      <span class="progress-pct" id="progressPct">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <div class="progress-legend">
+      <span class="legend-dot green-dot"></span>Matched (1pt)
+      <span class="legend-dot yellow-dot"></span>Weak (0.5pt)
+      <span class="legend-dot red-dot"></span>Missing (0pt)
+    </div>
+  </div>
+
+  <!-- CHARTS ROW -->
+  <div class="charts-grid fade-in">
+    <div class="chart-card wide">
+      <div class="chart-header">
+        <div class="chart-title">Skill Level Comparison</div>
+        <div class="chart-sub">Your level vs what the internship requires (scale 1–5)</div>
+      </div>
+      <div class="chart-body">
+        <canvas id="barChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">Gap Breakdown</div>
+        <div class="chart-sub">Matched / Weak / Missing</div>
+      </div>
+      <div class="chart-body doughnut-wrap">
+        <canvas id="doughnutChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-header">
+        <div class="chart-title">Radar Overview</div>
+        <div class="chart-sub">Skills shape comparison</div>
+      </div>
+      <div class="chart-body">
+        <canvas id="radarChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="table-card fade-in">
+    <div class="table-header">
+      <div class="chart-title">Skill-by-Skill Breakdown</div>
+      <div class="chart-sub">Detailed comparison of every required skill</div>
+    </div>
+    <div class="table-wrap">
+      <table class="skill-table">
+        <thead>
+          <tr>
+            <th>Skill</th>
+            <th>Category</th>
+            <th>Your Level</th>
+            <th>Required</th>
+            <th>Gap</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="skillTableBody">
+          <tr><td colspan="6" class="loading-row">Select a student and internship above ↑</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RECOMMENDATIONS -->
+  <div class="rec-section fade-in">
+    <div class="rec-header">
+      <div class="chart-title">📚 Personalized Learning Recommendations</div>
+      <div class="chart-sub">Action plan for your weak and missing skills</div>
+    </div>
+    <div class="rec-grid" id="recGrid">
+      <!-- filled by JS -->
+    </div>
+  </div>
+
+</main>
+
+<script src="../js/skill-gap.js"></script>
+</body>
+</html>
