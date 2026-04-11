@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{title}} — SkillBridge</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet" />
+  <!-- Bootstrap Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+
+  <style>
+    body { background: #f8fafc; }
+
+    /* Minimal navbar for standalone testing */
+    .navbar { background: #161616 !important; border-bottom: 2px solid #0f62fe; }
+    .navbar-brand { font-weight: 800; font-size: 1.05rem; color: #fff !important; }
+    .navbar-brand span { color: #08bdba; }
+    .nav-badge {
+      background: rgba(15,98,254,.2);
+      border: 1px solid rgba(15,98,254,.4);
+      color: #93c5fd;
+      font-size: .65rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 600;
+      letter-spacing: .05em;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Minimal navbar -->
+<nav class="navbar navbar-expand-lg px-4 py-2">
+  <a class="navbar-brand" href="/matching">Skill<span>Bridge</span></a>
+  <div class="ms-3">
+    <span class="nav-badge">Skill Matching</span>
+  </div>
+</nav>
+
+<!-- Page content -->
+<div style="padding-top: 1.5rem;">
+  {{{body}}}
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

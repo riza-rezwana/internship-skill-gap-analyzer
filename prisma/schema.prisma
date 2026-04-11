@@ -1,3 +1,12 @@
+// ============================================================
+// FILE: prisma/schema.prisma
+// Feature: Module 2, Feature 4 — Skill-Based Internship Matching
+// ============================================================
+// STANDALONE: includes generator + datasource for solo testing.
+// GROUP MERGE: copy only the 5 model blocks — skip generator
+// and datasource if your group schema already has them.
+// ============================================================
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -7,12 +16,58 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Certificate {
-  id               Int      @id @default(autoincrement())
-  studentName      String
-  companyName      String
-  certificateFile  String
-  durationMonths   Int
-  experienceRating Int
-  createdAt        DateTime @default(now())
+// Global skill pool - one row per unique skill name (lowercase)
+model Skill {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  studentSkills    StudentSkill[]
+  internshipSkills InternshipSkill[]
+}
+
+// Student - merge with group model if it already exists
+// Just add:  skills StudentSkill[]
+model Student {
+  id         Int    @id @default(autoincrement())
+  name       String
+  studentId  String @unique
+  department String
+
+  skills StudentSkill[]
+}
+
+// Student <-> Skill many-to-many
+// level: 1-5 proficiency (optional, stored for display)
+model StudentSkill {
+  id        Int @id @default(autoincrement())
+  studentId Int
+  skillId   Int
+  level     Int @default(3)
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  skill   Skill   @relation(fields: [skillId],   references: [id], onDelete: Cascade)
+
+  @@unique([studentId, skillId])
+}
+
+// Internship - merge with group model if it already exists
+// Just add:  requiredSkills InternshipSkill[]
+model Internship {
+  id          Int    @id @default(autoincrement())
+  title       String
+  companyName String
+
+  requiredSkills InternshipSkill[]
+}
+
+// Internship <-> Skill many-to-many
+model InternshipSkill {
+  id           Int @id @default(autoincrement())
+  internshipId Int
+  skillId      Int
+
+  internship Internship @relation(fields: [internshipId], references: [id], onDelete: Cascade)
+  skill      Skill      @relation(fields: [skillId],      references: [id], onDelete: Cascade)
+
+  @@unique([internshipId, skillId])
 }

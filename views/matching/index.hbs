@@ -1,0 +1,406 @@
+{{!-- ============================================================ --}}
+{{!-- FILE: views/matching/index.hbs                              --}}
+{{!-- Feature: Module 2, Feature 4 — Skill-Based Matching        --}}
+{{!-- ============================================================ --}}
+
+<div class="container-fluid px-4 py-4">
+
+  {{!-- Page Header --}}
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-4">
+    <div>
+      <h2 class="fw-bold mb-1" style="font-size:1.5rem;letter-spacing:-.02em">
+        &#9733; Skill-Based Internship Matching
+      </h2>
+      <p class="text-muted mb-0" style="font-size:.875rem">
+        Students ranked by skill match percentage
+      </p>
+    </div>
+
+    {{!-- Internship selector dropdown --}}
+    {{#if internships.length}}
+    <div style="min-width:300px">
+      <label class="form-label fw-semibold mb-1" style="font-size:.75rem;letter-spacing:.06em;text-transform:uppercase">
+        Select Internships
+      </label>
+      <select class="form-select form-select-sm" id="internshipSelect"
+              onchange="window.location='/matching/'+this.value"
+              style="font-size:.875rem">
+        {{#each internships}}
+        <option value="{{id}}" {{#if (eq id ../selectedId)}}selected{{/if}}>
+          {{title}} — {{companyName}}
+        </option>
+        {{/each}}
+      </select>
+    </div>
+    {{/if}}
+  </div>
+
+  {{!-- No data state --}}
+  {{#if noData}}
+  <div class="card border-0 shadow-sm text-center py-5">
+    <div class="card-body">
+      <div style="font-size:3rem;opacity:.3">&#128203;</div>
+      <h5 class="mt-3 fw-semibold">No internships in database</h5>
+      <p class="text-muted mb-2" style="font-size:.875rem">
+        Seed the database first to see matches.
+      </p>
+      <code style="font-size:.8rem">node seed/matchingSeed.js</code>
+    </div>
+  </div>
+
+  {{else}}
+
+  {{!-- Internship info bar --}}
+  <div class="card border-0 shadow-sm mb-4" style="border-left:4px solid #0f62fe !important">
+    <div class="card-body py-3 px-4">
+      <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+        <div>
+          <div class="fw-bold" style="font-size:1.05rem">{{internship.title}}</div>
+          <div class="text-muted" style="font-size:.85rem">{{internship.companyName}}</div>
+        </div>
+        <div>
+          <div style="font-size:.7rem;font-weight:700;color:#6b7280;letter-spacing:.06em;margin-bottom:4px">
+            REQUIRED SKILLS
+          </div>
+          <div>
+            {{#each internship.requiredSkills}}
+            <span class="badge rounded-pill me-1 mb-1"
+                  style="background:#eff6ff;color:#1d4ed8;font-weight:500;font-size:.73rem;
+                         border:1px solid #bfdbfe;padding:.3em .8em">
+              {{skill.name}}
+            </span>
+            {{else}}
+            <span class="text-muted" style="font-size:.82rem">No specific skills required</span>
+            {{/each}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {{!-- Stats strip --}}
+  {{#if stats}}
+  <div class="row g-3 mb-4">
+    <div class="col-6 col-sm-4 col-xl-2">
+      <div class="card border-0 text-center py-3" style="background:#eff6ff">
+        <div class="stat-val" style="color:#1d4ed8">{{stats.totalStudents}}</div>
+        <div class="stat-lbl">Total</div>
+      </div>
+    </div>
+    <div class="col-6 col-sm-4 col-xl-2">
+      <div class="card border-0 text-center py-3" style="background:#f0fdf4">
+        <div class="stat-val" style="color:#15803d">{{stats.perfectMatch}}</div>
+        <div class="stat-lbl">Perfect 100%</div>
+      </div>
+    </div>
+    <div class="col-6 col-sm-4 col-xl-2">
+      <div class="card border-0 text-center py-3" style="background:#f0fdf4">
+        <div class="stat-val" style="color:#16a34a">{{stats.strongMatch}}</div>
+        <div class="stat-lbl">Strong 75-99%</div>
+      </div>
+    </div>
+    <div class="col-6 col-sm-4 col-xl-2">
+      <div class="card border-0 text-center py-3" style="background:#fefce8">
+        <div class="stat-val" style="color:#ca8a04">{{stats.goodMatch}}</div>
+        <div class="stat-lbl">Good 50-74%</div>
+      </div>
+    </div>
+    <div class="col-6 col-sm-4 col-xl-2">
+      <div class="card border-0 text-center py-3" style="background:#fff7ed">
+        <div class="stat-val" style="color:#ea580c">{{stats.partialMatch}}</div>
+        <div class="stat-lbl">Partial 25-49%</div>
+      </div>
+    </div>
+    <div class="col-6 col-sm-4 col-xl-2">
+      <div class="card border-0 text-center py-3" style="background:#f8fafc">
+        <div class="stat-val" style="color:#475569">{{stats.averageMatch}}%</div>
+        <div class="stat-lbl">Avg Match</div>
+      </div>
+    </div>
+  </div>
+  {{/if}}
+
+  {{!-- Filter bar + search --}}
+  <div class="d-flex align-items-center gap-2 flex-wrap mb-3">
+    <span style="font-size:.72rem;font-weight:700;color:#9ca3af;letter-spacing:.08em">FILTER:</span>
+    <button class="filter-btn active" data-min="0"   data-max="100">All ({{stats.totalStudents}})</button>
+    <button class="filter-btn tier-strong" data-min="75"  data-max="100">&#9650; Strong &#8805;75%</button>
+    <button class="filter-btn tier-good"   data-min="50"  data-max="74.9">Good 50-74%</button>
+    <button class="filter-btn tier-partial" data-min="25" data-max="49.9">Partial 25-49%</button>
+    <button class="filter-btn tier-low"    data-min="0"   data-max="24.9">Low &lt;25%</button>
+    <div class="ms-auto">
+      <input type="text" id="studentSearch" class="form-control form-control-sm"
+             placeholder="&#128269; Search by name…"
+             style="font-size:.8rem;min-width:180px" />
+    </div>
+  </div>
+
+  {{!-- Main ranked table --}}
+  <div class="card border-0 shadow-sm">
+    <div class="card-header bg-white border-bottom d-flex justify-content-between align-items-center py-3 px-4">
+      <span class="fw-semibold" style="font-size:.9rem">
+        &#127942; Student Rankings &mdash; Highest Match First
+      </span>
+      <span class="badge bg-light text-secondary border" style="font-size:.75rem">
+        {{rankedStudents.length}} students ranked
+      </span>
+    </div>
+
+    {{#if rankedStudents.length}}
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0" id="matchTable">
+        <thead>
+          <tr class="table-light">
+            <th class="col-rank">RANK</th>
+            <th>STUDENT</th>
+            <th class="col-score">MATCH SCORE</th>
+            <th>MATCHED SKILLS</th>
+            <th>MISSING SKILLS</th>
+            <th>EXPLANATION</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each rankedStudents}}
+          <tr class="match-row" data-pct="{{matchPercentage}}" data-name="{{studentName}}">
+
+            {{!-- Rank column --}}
+            <td class="text-center">
+              {{#if (eq rank 1)}}
+                <span class="medal">&#129351;</span>
+              {{else if (eq rank 2)}}
+                <span class="medal">&#129352;</span>
+              {{else if (eq rank 3)}}
+                <span class="medal">&#129353;</span>
+              {{else}}
+                <span class="rank-num">#{{rank}}</span>
+              {{/if}}
+            </td>
+
+            {{!-- Student name + department --}}
+            <td>
+              <div class="fw-semibold" style="font-size:.9rem">{{studentName}}</div>
+              <div class="text-muted" style="font-size:.77rem">{{department}}</div>
+            </td>
+
+            {{!-- Match score + progress bar --}}
+            <td style="min-width:180px">
+              <div class="d-flex align-items-center gap-2 mb-1">
+                {{!-- Percentage number - color set by JS after render --}}
+                <span class="pct-num fw-bold" data-pct="{{matchPercentage}}"
+                      style="font-family:monospace;font-size:.95rem">
+                  {{matchPercentage}}%
+                </span>
+                <span class="text-muted" style="font-size:.72rem">
+                  {{matchedCount}}/{{requiredCount}} skills
+                </span>
+              </div>
+              {{!-- Progress bar - width set by inline style (works in HBS) --}}
+              <div class="progress-track">
+                <div class="progress-fill pct-bar" data-pct="{{matchPercentage}}"
+                     style="width:{{matchPercentage}}%"></div>
+              </div>
+              {{!-- Tier label --}}
+              <div class="tier-label" data-pct="{{matchPercentage}}"
+                   style="font-size:.7rem;margin-top:3px">
+                {{#if (eq matchPercentage 100)}}Perfect Match
+                {{else if (gte matchPercentage 75)}}Strong Match
+                {{else if (gte matchPercentage 50)}}Good Match
+                {{else if (gte matchPercentage 25)}}Partial Match
+                {{else if (gt matchPercentage 0)}}Low Match
+                {{else}}No Match
+                {{/if}}
+              </div>
+            </td>
+
+            {{!-- Matched skills --}}
+            <td>
+              {{#if matchedSkills.length}}
+                {{#each matchedSkills}}
+                <span class="skill-chip chip-matched">&#10003; {{this}}</span>
+                {{/each}}
+              {{else}}
+                <span class="no-skills">—</span>
+              {{/if}}
+            </td>
+
+            {{!-- Missing skills --}}
+            <td>
+              {{#if missingSkills.length}}
+                {{#each missingSkills}}
+                <span class="skill-chip chip-missing">&#10007; {{this}}</span>
+                {{/each}}
+              {{else}}
+                <span class="all-matched">&#10003; All skills matched!</span>
+              {{/if}}
+            </td>
+
+            {{!-- Explanation --}}
+            <td style="max-width:220px">
+              <span style="font-size:.78rem;color:#374151;line-height:1.5">
+                {{explanation}}
+              </span>
+            </td>
+
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
+
+    {{!-- No results after filter --}}
+    <div id="noFilterResults" class="text-center py-4 text-muted d-none">
+      <div>No students in this tier.</div>
+    </div>
+
+    {{else}}
+    <div class="text-center py-5 text-muted">
+      <div style="font-size:2.5rem;opacity:.3">&#128101;</div>
+      <p class="mt-3 mb-1" style="font-size:.875rem">No students in database yet.</p>
+      <code style="font-size:.8rem">node seed/matchingSeed.js</code>
+    </div>
+    {{/if}}
+  </div>
+
+  {{!-- Algorithm explainer box --}}
+  <div class="mt-4 p-3 rounded algo-box">
+    <div class="algo-title">HOW THE SCORE IS CALCULATED</div>
+    <div class="algo-body">
+      <code>matchPercentage = (matched required skills &divide; total required skills) &times; 100</code>
+      <br/>
+      Skills are compared case-insensitively &mdash; <code>React.JS</code> and <code>react.js</code> are treated the same.
+      Duplicate skills are removed before comparison.
+      An internship with no required skills gives 100% to all students.
+    </div>
+  </div>
+
+  {{/if}}
+</div>
+
+{{!-- ── Styles ── --}}
+<style>
+  /* Stats */
+  .stat-val { font-size:1.6rem;font-weight:800;font-family:monospace;line-height:1.1 }
+  .stat-lbl { font-size:.68rem;color:#9ca3af;text-transform:uppercase;letter-spacing:.06em;margin-top:2px }
+
+  /* Filter buttons */
+  .filter-btn {
+    font-size:.74rem;padding:4px 12px;border-radius:999px;cursor:pointer;
+    border:1px solid #e5e7eb;background:#f9fafb;color:#475569;
+    font-weight:500;transition:all .12s;
+  }
+  .filter-btn.active,
+  .filter-btn:hover        { background:#0f62fe;color:#fff;border-color:#0f62fe }
+  .tier-strong             { background:#dcfce7;color:#166534;border-color:#bbf7d0 }
+  .tier-strong.active      { background:#15803d;color:#fff;border-color:#15803d }
+  .tier-good               { background:#fef9c3;color:#713f12;border-color:#fde047 }
+  .tier-good.active        { background:#ca8a04;color:#fff;border-color:#ca8a04 }
+  .tier-partial            { background:#ffedd5;color:#9a3412;border-color:#fed7aa }
+  .tier-partial.active     { background:#ea580c;color:#fff;border-color:#ea580c }
+  .tier-low                { background:#fee2e2;color:#991b1b;border-color:#fecaca }
+  .tier-low.active         { background:#dc2626;color:#fff;border-color:#dc2626 }
+
+  /* Table header */
+  thead th {
+    font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;
+    color:#6b7280;padding:10px 14px;background:#f8fafc;
+    border-bottom:1px solid #e5e7eb;font-weight:600
+  }
+  tbody td { padding:11px 14px }
+  .col-rank  { width:64px;text-align:center }
+  .col-score { width:190px }
+  .medal     { font-size:1.2rem }
+  .rank-num  { font-family:monospace;font-size:.85rem;color:#9ca3af;font-weight:700 }
+
+  /* Progress bar */
+  .progress-track { background:#e5e7eb;border-radius:999px;height:7px;overflow:hidden;width:100% }
+  .progress-fill  { height:100%;border-radius:999px;transition:width .4s ease }
+
+  /* Skill chips */
+  .skill-chip {
+    display:inline-block;font-size:.7rem;padding:2px 7px;
+    border-radius:4px;margin:2px;font-weight:500
+  }
+  .chip-matched { background:#dcfce7;color:#166534;border:1px solid #bbf7d0 }
+  .chip-missing { background:#fee2e2;color:#991b1b;border:1px solid #fecaca }
+  .no-skills    { font-size:.8rem;color:#d1d5db }
+  .all-matched  { font-size:.8rem;color:#16a34a;font-weight:600 }
+
+  /* Algorithm box */
+  .algo-box   { background:#eff6ff;border-left:4px solid #0f62fe;border-radius:0 8px 8px 0 }
+  .algo-title { font-size:.72rem;font-weight:700;color:#1d4ed8;letter-spacing:.07em;margin-bottom:6px }
+  .algo-body  { font-size:.8rem;color:#374151;line-height:1.8 }
+  .algo-body code { background:#dbeafe;color:#1e40af;padding:1px 5px;border-radius:3px;font-size:.78rem }
+
+  /* Row hover */
+  #matchTable tbody tr:hover { background:#f0f7ff }
+</style>
+
+{{!-- ── Scripts ── --}}
+<script>
+(function () {
+  // Colour-code percentage numbers and bars by tier
+  const TIERS = [
+    { min: 100, max: 100, color: '#15803d', barBg: '#22c55e', label: 'Perfect Match' },
+    { min: 75,  max: 99,  color: '#16a34a', barBg: '#4ade80', label: 'Strong Match'  },
+    { min: 50,  max: 74,  color: '#ca8a04', barBg: '#eab308', label: 'Good Match'    },
+    { min: 25,  max: 49,  color: '#ea580c', barBg: '#fb923c', label: 'Partial Match' },
+    { min: 1,   max: 24,  color: '#dc2626', barBg: '#f87171', label: 'Low Match'     },
+    { min: 0,   max: 0,   color: '#9ca3af', barBg: '#d1d5db', label: 'No Match'      },
+  ];
+
+  function getTier(pct) {
+    return TIERS.find(t => pct >= t.min && pct <= t.max) || TIERS[TIERS.length - 1];
+  }
+
+  // Apply colours after DOM loads
+  document.querySelectorAll('.pct-num').forEach(el => {
+    const pct = parseFloat(el.dataset.pct);
+    el.style.color = getTier(pct).color;
+  });
+  document.querySelectorAll('.pct-bar').forEach(el => {
+    const pct = parseFloat(el.dataset.pct);
+    el.style.background = getTier(pct).barBg;
+  });
+  document.querySelectorAll('.tier-label').forEach(el => {
+    const pct = parseFloat(el.dataset.pct);
+    const t = getTier(pct);
+    el.style.color = t.color;
+  });
+
+  // ── Filter by tier ─────────────────────────────────
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      applyFilters();
+    });
+  });
+
+  // ── Search by student name ──────────────────────────
+  const searchInput = document.getElementById('studentSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', applyFilters);
+  }
+
+  function applyFilters() {
+    const activeBtn  = document.querySelector('.filter-btn.active');
+    const min        = parseFloat(activeBtn?.dataset.min ?? 0);
+    const max        = parseFloat(activeBtn?.dataset.max ?? 100);
+    const query      = (searchInput?.value ?? '').toLowerCase().trim();
+
+    let visible = 0;
+    document.querySelectorAll('.match-row').forEach(row => {
+      const pct  = parseFloat(row.dataset.pct);
+      const name = row.dataset.name.toLowerCase();
+      const show = pct >= min && pct <= max && name.includes(query);
+      row.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+
+    const noResults = document.getElementById('noFilterResults');
+    if (noResults) {
+      noResults.classList.toggle('d-none', visible > 0);
+    }
+  }
+})();
+</script>
