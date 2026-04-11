@@ -464,7 +464,7 @@ input::placeholder {
 
 }
 
-////////////////////////////
+
 .dashboard-top-bar {
   display: flex;
   justify-content: space-between;
@@ -556,4 +556,58 @@ input::placeholder {
     width: 100%;
     text-align: center;
   }
+}
+
+/* ===== Resume Upload Box (NEW) ===== */
+
+.resume-drop-box {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 28px;
+  min-height: 260px;
+  width: 100%;
+  padding: 32px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  cursor: pointer;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.04);
+  transition: 0.25s ease;
+}
+
+.resume-drop-box:hover {
+  background: rgba(255, 255, 255, 0.06);
+  transform: translateY(-2px);
+}
+
+.resume-icon {
+  font-size: 4rem;
+  margin-bottom: 16px;
+}
+
+.resume-main-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #cdb7ff;
+  margin-bottom: 8px;
+}
+
+.resume-sub-text {
+  font-size: 0.95rem;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 22px;
+}
+
+.resume-file-bar {
+  width: 100%;
+  max-width: 640px;
+  min-height: 52px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  color: #fff;
+  font-weight: 500;
 }

@@ -1,0 +1,20 @@
+<h2>Welcome, <%= company.companyName %></h2>
+
+<a href="/company/internships/create">Post New Internship</a>
+<a href="/company/internships/manage">Manage Internships</a>
+<a href="/company/logout">Logout</a>
+
+<h3>Your Internship Posts</h3>
+
+<% if (internships.length === 0) { %>
+  <p>No internships posted yet.</p>
+<% } else { %>
+  <% internships.forEach(internship => { %>
+    <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+      <h4><%= internship.title %></h4>
+      <p><strong>Location:</strong> <%= internship.location || 'N/A' %></p>
+      <p><strong>Mode:</strong> <%= internship.workMode || 'N/A' %></p>
+      <p><strong>Status:</strong> <%= internship.status %></p>
+    </div>
+  <% }) %>
+<% } %>
