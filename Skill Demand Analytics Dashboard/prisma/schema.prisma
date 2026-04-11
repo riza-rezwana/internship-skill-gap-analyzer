@@ -1,0 +1,69 @@
+// prisma/schema.prisma
+// Module 2 (Member 3): Skill Demand Analytics Dashboard
+// Tracks which skills appear most in internship postings
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Skill {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  category    String   // e.g., "Frontend", "Backend", "Data", "DevOps", "Soft Skills"
+  createdAt   DateTime @default(now())
+
+  studentSkills           StudentSkill[]
+  internshipRequirements  InternshipSkillRequirement[]
+}
+
+model Student {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  major     String
+  year      Int      // academic year 1-4
+  createdAt DateTime @default(now())
+
+  skills    StudentSkill[]
+}
+
+model StudentSkill {
+  id         Int     @id @default(autoincrement())
+  studentId  Int
+  skillId    Int
+  level      Int     // 1 to 5
+
+  student    Student @relation(fields: [studentId], references: [id])
+  skill      Skill   @relation(fields: [skillId], references: [id])
+
+  @@unique([studentId, skillId])
+}
+
+model Internship {
+  id          Int      @id @default(autoincrement())
+  title       String
+  company     String
+  industry    String   // e.g., "Tech", "Finance", "Healthcare"
+  location    String
+  type        String   // "Remote", "Onsite", "Hybrid"
+  postedAt    DateTime @default(now())
+
+  skillRequirements InternshipSkillRequirement[]
+}
+
+model InternshipSkillRequirement {
+  id            Int     @id @default(autoincrement())
+  internshipId  Int
+  skillId       Int
+  requiredLevel Int     // 1 to 5
+
+  internship    Internship @relation(fields: [internshipId], references: [id])
+  skill         Skill      @relation(fields: [skillId], references: [id])
+
+  @@unique([internshipId, skillId])
+}
