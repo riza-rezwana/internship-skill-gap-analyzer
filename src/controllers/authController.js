@@ -55,7 +55,7 @@ const registerStudent = async (req, res) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const resumeFile = req.file ? `/uploads/resumes/${req.file.filename}` : null;
+    const resumeFile = req.file ? `/uploads/${req.file.filename}` : null;
 
     const skillArray = skills
       ? skills.split(',').map(skill => skill.trim()).filter(Boolean)
