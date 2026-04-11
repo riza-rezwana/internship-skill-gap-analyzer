@@ -1,0 +1,27 @@
+<h2>Company Registration</h2>
+
+<form action="/company/register" method="POST" enctype="multipart/form-data">
+  <input type="text" name="companyName" placeholder="Company Name" required>
+  <input type="email" name="email" placeholder="Company Email" required>
+  <input type="password" name="password" placeholder="Password" required>
+  <input type="password" name="confirmPassword" placeholder="Confirm Password" required>
+
+  <input type="text" name="registrationNumber" placeholder="Registration Number">
+  <input type="text" name="industrySector" placeholder="Industry Sector">
+  <input type="text" name="companySize" placeholder="Company Size">
+  <textarea name="companyDescription" placeholder="Company Description"></textarea>
+  <input type="text" name="companyWebsite" placeholder="Company Website">
+
+  <input type="text" name="contactPersonName" placeholder="Contact Person Name">
+  <input type="text" name="designation" placeholder="Designation">
+  <input type="text" name="phoneNumber" placeholder="Phone Number">
+  <textarea name="officeAddress" placeholder="Office Address"></textarea>
+
+  <label>Registration Certificate</label>
+  <input type="file" name="registrationCertificate">
+
+  <label>GST Certificate</label>
+  <input type="file" name="gstCertificate">
+
+  <button type="submit">Register Company</button>
+</form>

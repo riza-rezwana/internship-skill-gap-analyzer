@@ -50,3 +50,49 @@ model StudentSkill {
   studentId Int
   student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
 }
+model Company {
+  id                      Int          @id @default(autoincrement())
+  companyName             String
+  email                   String       @unique
+  password                String
+  registrationNumber      String?
+  industrySector          String?
+  companySize             String?
+  companyDescription      String?      @db.Text
+  companyWebsite          String?
+  contactPersonName       String?
+  designation             String?
+  phoneNumber             String?
+  officeAddress           String?      @db.Text
+  registrationCertificate String?
+  gstCertificate          String?
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
+
+  internships             Internship[]
+}
+
+model Internship {
+  id                    Int       @id @default(autoincrement())
+  companyId             Int
+  title                 String
+  department            String?
+  location              String?
+  workMode              String?
+  durationMonths        Int?
+  stipend               Float?
+  roleDescription       String    @db.Text
+  learningOutcomes      String?   @db.Text
+  numberOfPositions     Int       @default(1)
+  requiredSkills        String?   @db.Text
+  minimumDegreeLevel    String?
+  preferredFieldOfStudy String?
+  minimumGpaPercentage  String?
+  graduationYearRange   String?
+  additionalPreferences String?   @db.Text
+  status                String    @default("ACTIVE")
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  company               Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+}

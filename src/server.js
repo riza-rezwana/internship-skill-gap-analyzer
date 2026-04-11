@@ -5,7 +5,8 @@ const methodOverride = require('method-override');
 const homeRoutes = require('./routes/homeRoutes');
 const authRoutes = require('./routes/authRoutes');
 const studentRoutes = require('./routes/studentRoutes');
-
+const companyRoutes = require('./routes/companyRoutes');
+const internshipRoutes = require('./routes/internshipRoutes');
 ///////
 const express = require("express");
 const path = require("path");
@@ -40,6 +41,7 @@ app.use((req, res, next) => {
   res.locals.success_msg = req.flash('success_msg');
   res.locals.error_msg = req.flash('error_msg');
   res.locals.currentStudent = req.session.student || null;
+  res.locals.currentCompany = req.session.company || null;
   next();
 });
 app.use('/', homeRoutes);
@@ -47,7 +49,8 @@ app.use('/', authRoutes);
 app.use('/student', studentRoutes);
 ////////////////
 
-
+app.use('/company', companyRoutes);
+app.use('/company/internships', internshipRoutes);
 
 
 

@@ -9,14 +9,14 @@
     </a>
   </div>
 
-  <div class="portal-brand-left">FutureForge</div>
+  <div class="portal-brand-left">Internship + Skill Gap Analyzer</div>
 
   <div class="container py-3">
     <%- include('partials/alerts') %>
 
     <div class="register-page-wrap">
       <div class="portal-page-heading text-center mb-3">
-        <h1 class="portal-main-title">Student Portal</h1>
+        <h1 class="portal-main-title">✦ Student Portal</h1>
         <p class="portal-main-subtitle">
           Register and get matched with your perfect internship opportunity
         </p>
@@ -45,11 +45,16 @@
                 Upload your resume and let AI extract your information automatically
               </p>
 
-              <label class="resume-drop-box">
-                <input type="file" name="resume" accept=".pdf" hidden>
-                <div class="resume-icon">⤴</div>
-                <div class="resume-main-text">Click to upload your resume</div>
-                <div class="resume-sub-text">PDF up to 5MB</div>
+              <label class="resume-drop-box" for="resumeInput">
+                <input type="file" id="resumeInput" name="resume" accept=".pdf" hidden>
+  
+                <div class="resume-icon">📄</div>
+                <div class="resume-main-text">Drag Drop or Choose File to Upload</div>
+                <div class="resume-sub-text">PDF Accepted</div>
+
+                <div class="resume-file-bar">
+                   <span id="resumeFileName">No file chosen</span>
+                </div>
               </label>
             </div>
 
@@ -224,5 +229,18 @@
     </div>
   </div>
 </div>
+<script>
+  const resumeInput = document.getElementById('resumeInput');
+  const resumeFileName = document.getElementById('resumeFileName');
 
+  if (resumeInput) {
+    resumeInput.addEventListener('change', function () {
+      if (this.files && this.files.length > 0) {
+        resumeFileName.textContent = this.files[0].name;
+      } else {
+        resumeFileName.textContent = 'No file chosen';
+      }
+    });
+  }
+</script>
 <%- include('partials/footer') %>
