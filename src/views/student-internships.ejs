@@ -1,0 +1,17 @@
+<h2>Available Internships</h2>
+
+<% if (internships.length === 0) { %>
+  <p>No internships available right now.</p>
+<% } else { %>
+  <% internships.forEach(internship => { %>
+    <div style="border:1px solid #ccc; padding:12px; margin-bottom:12px;">
+      <h3><%= internship.title %></h3>
+      <p><strong>Company:</strong> <%= internship.company.companyName %></p>
+      <p><strong>Location:</strong> <%= internship.location || 'N/A' %></p>
+      <p><strong>Mode:</strong> <%= internship.workMode || 'N/A' %></p>
+      <p><strong>Duration:</strong> <%= internship.durationMonths || 'N/A' %> months</p>
+      <p><strong>Stipend:</strong> ₹<%= internship.stipend || 0 %></p>
+      <a href="/student/internships/<%= internship.id %>">View Details</a>
+    </div>
+  <% }) %>
+<% } %>

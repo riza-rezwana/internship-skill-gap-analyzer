@@ -1,0 +1,23 @@
+<h2><%= internship.title %></h2>
+
+<p><strong>Company:</strong> <%= internship.company.companyName %></p>
+<p><strong>Department:</strong> <%= internship.department || 'N/A' %></p>
+<p><strong>Location:</strong> <%= internship.location || 'N/A' %></p>
+<p><strong>Work Mode:</strong> <%= internship.workMode || 'N/A' %></p>
+<p><strong>Duration:</strong> <%= internship.durationMonths || 'N/A' %> months</p>
+<p><strong>Stipend:</strong> ₹<%= internship.stipend || 0 %></p>
+
+<p><strong>Role Description:</strong></p>
+<p><%= internship.roleDescription %></p>
+
+<p><strong>Learning Outcomes:</strong></p>
+<p><%= internship.learningOutcomes || 'N/A' %></p>
+
+<p><strong>Required Skills:</strong></p>
+<p><%= internship.requiredSkills || 'N/A' %></p>
+
+<p><strong>Minimum Degree:</strong> <%= internship.minimumDegreeLevel || 'N/A' %></p>
+<p><strong>Preferred Field:</strong> <%= internship.preferredFieldOfStudy || 'N/A' %></p>
+<p><strong>Minimum GPA/Percentage:</strong> <%= internship.minimumGpaPercentage || 'N/A' %></p>
+<p><strong>Graduation Year Range:</strong> <%= internship.graduationYearRange || 'N/A' %></p>
+<p><strong>Additional Preferences:</strong> <%= internship.additionalPreferences || 'N/A' %></p>

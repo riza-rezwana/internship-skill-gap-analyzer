@@ -1,0 +1,23 @@
+<h2>Post Internship</h2>
+
+<form action="/company/internships/create" method="POST">
+  <input type="text" name="title" placeholder="Role Title" required>
+  <input type="text" name="department" placeholder="Department">
+  <input type="text" name="location" placeholder="Location">
+  <input type="text" name="workMode" placeholder="Work Mode">
+  <input type="number" name="durationMonths" placeholder="Duration in months">
+  <input type="number" step="0.01" name="stipend" placeholder="Monthly Stipend">
+
+  <textarea name="roleDescription" placeholder="Role Description" required></textarea>
+  <textarea name="learningOutcomes" placeholder="Learning Outcomes"></textarea>
+
+  <input type="number" name="numberOfPositions" placeholder="Number of Positions" value="1">
+  <input type="text" name="requiredSkills" placeholder="Required Skills (comma separated)">
+  <input type="text" name="minimumDegreeLevel" placeholder="Minimum Degree Level">
+  <input type="text" name="preferredFieldOfStudy" placeholder="Preferred Field of Study">
+  <input type="text" name="minimumGpaPercentage" placeholder="Minimum GPA/Percentage">
+  <input type="text" name="graduationYearRange" placeholder="Graduation Year Range">
+  <textarea name="additionalPreferences" placeholder="Additional Preferences"></textarea>
+
+  <button type="submit">Post Internship</button>
+</form>
