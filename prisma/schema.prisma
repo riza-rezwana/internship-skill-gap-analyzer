@@ -40,23 +40,13 @@ model student {
   additionalInformation String?        @db.Text
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
-  
-  skills                studentSkill[] 
+  studentskill          studentskill[]
 }
 
-model studentSkill {
-  id        Int     @id @default(autoincrement())
-  name      String
-  studentId Int
-  student   student @relation(fields: [studentId], references: [id], onDelete: Cascade, map: "StudentSkill_studentId_fkey")
-
-  @@index([studentId], map: "StudentSkill_studentId_fkey")
-}
-
-model Company {
+model company {
   id                      Int          @id @default(autoincrement())
   companyName             String
-  email                   String       @unique
+  email                   String       @unique(map: "Company_email_key")
   password                String
   registrationNumber      String?
   industrySector          String?
@@ -70,12 +60,11 @@ model Company {
   registrationCertificate String?
   gstCertificate          String?
   createdAt               DateTime     @default(now())
-  updatedAt               DateTime     @updatedAt
-
-  internships             Internship[]
+  updatedAt               DateTime
+  internship              internship[]
 }
 
-model Internship {
+model internship {
   id                    Int      @id @default(autoincrement())
   companyId             Int
   title                 String
@@ -95,7 +84,17 @@ model Internship {
   additionalPreferences String?  @db.Text
   status                String   @default("ACTIVE")
   createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  updatedAt             DateTime
+  company               company  @relation(fields: [companyId], references: [id], onDelete: Cascade, map: "Internship_companyId_fkey")
 
-  company               Company  @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  @@index([companyId], map: "Internship_companyId_fkey")
+}
+
+model studentskill {
+  id        Int     @id @default(autoincrement())
+  name      String
+  studentId Int
+  student   student @relation(fields: [studentId], references: [id], onDelete: Cascade, map: "StudentSkill_studentId_fkey")
+
+  @@index([studentId], map: "StudentSkill_studentId_fkey")
 }
