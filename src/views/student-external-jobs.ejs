@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %></title>
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0b0014, #1c0033);
+      color: white;
+      margin: 0;
+      padding: 30px;
+    }
+
+    
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .action-bar {
+      text-align: right;
+      margin-bottom: 20px;
+    }
+
+    .post-btn {
+      background: #00d1ff;
+      color: #0b0014;
+      padding: 12px 20px;
+      border-radius: 10px;
+      text-decoration: none;
+      font-weight: bold;
+      display: inline-block;
+      transition: background 0.3s ease;
+    }
+
+    .post-btn:hover {
+      background: #00b4db;
+    }
+
+    form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    input, select, button {
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: none;
+      font-size: 14px;
+    }
+
+    input, select {
+      min-width: 180px;
+    }
+
+    button {
+      background: #7b2cff;
+      color: white;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background: #6920df;
+    }
+
+    .jobs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 20px;
+    }
+
+    .job-card {
+      background: rgba(255, 255, 255, 0.08);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .badge {
+      background: #00d1ff;
+      color: #0b0014;
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      align-self: flex-start;
+    }
+
+    .job-card h2 {
+      margin-top: 5px;
+      font-size: 22px;
+    }
+
+    .job-card p {
+      margin: 8px 0;
+      line-height: 1.5;
+    }
+
+    .job-card a {
+      display: inline-block;
+      margin-top: auto; /* Pushes button to the bottom */
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: white;
+      color: #2f0b59;
+      text-decoration: none;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .job-card a:hover {
+      opacity: 0.9;
+    }
+
+    .empty-message {
+      text-align: center;
+      margin-top: 40px;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <!-- SAME NAVBAR AS HOME -->
+  <div class="topbar">
+    <div class="logo">✦ Student Portal</div>
+
+    <div class="nav-pill">
+      <a href="/" class="<%= typeof currentPage !== 'undefined' && currentPage === 'home' ? 'active' : '' %>">HOME</a>
+      <a href="/external-jobs" class="<%= typeof currentPage !== 'undefined' && currentPage === 'jobs' ? 'active' : '' %>">LIVE JOBS</a>
+    </div>
+  </div>
+  <div class="container">
+    
+    <% if (currentCompany) { %>
+      <div class="action-bar">
+        <a href="/company-listings/create" class="post-btn">
+          + Post Job Opportunity
+        </a>
+      </div>
+    <% } %>
+
+    <h1>Job Opportunities</h1>
+
+    <form method="GET" action="/external-jobs">
+      <input
+        type="text"
+        name="keyword"
+        placeholder="Keyword (Title, Company)"
+        value="<%= filters.keyword %>"
+      />
+
+      <input
+        type="text"
+        name="location"
+        placeholder="Location"
+        value="<%= filters.location %>"
+      />
+
+      <select name="remote">
+        <option value="">All Types</option>
+        <option value="remote" <%= filters.remote === "remote" ? "selected" : "" %>>Remote</option>
+        <option value="onsite" <%= filters.remote === "onsite" ? "selected" : "" %>>On-site</option>
+      </select>
+
+      <button type="submit">Search</button>
+    </form>
+
+    <% if (!jobs || jobs.length === 0) { %>
+      <div class="empty-message">
+        No jobs found matching your criteria.
+      </div>
+    <% } else { %>
+      <div class="jobs-grid">
+        <% jobs.forEach(job => { %>
+          <div class="job-card">
+            <% if (job.isManual) { %>
+              <span class="badge">Internal Post</span>
+            <% } %>
+
+            <h2><%= job.title || "Untitled Job" %></h2>
+            <p><strong>Company:</strong> <%= job.company_name || "N/A" %></p>
+            <p><strong>Location:</strong> <%= job.location || "N/A" %></p>
+            <p><strong>Remote:</strong> <%= job.remote ? "Yes" : "No" %></p>
+            <p><strong>Tags:</strong> <%= Array.isArray(job.tags) ? job.tags.join(", ") : (job.tags || "N/A") %></p>
+
+            <a href="<%= job.url %>" target="<%= job.isManual ? '_self' : '_blank' %>">
+              <%= job.isManual ? 'View Details' : 'View Original Post' %>
+            </a>
+          </div>
+        <% }) %>
+      </div>
+    <% } %>
+  </div>
+</body>
+</html>

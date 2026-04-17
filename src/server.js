@@ -13,6 +13,7 @@ const path = require("path");
 require("dotenv").config();
 
 const certificateRoutes = require("./routes/certificateRoutes");
+const externalJobsRoutes = require("./routes/externalJobsRoutes");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -46,6 +47,8 @@ app.use((req, res, next) => {
 });
 app.use('/', homeRoutes);
 app.use('/', authRoutes);
+
+app.use("/external-jobs", externalJobsRoutes);
 app.use('/student', studentRoutes);
 ////////////////
 
@@ -55,6 +58,8 @@ app.use('/company/internships', internshipRoutes);
 
 
 app.use("/certificates", certificateRoutes);
+
+
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
