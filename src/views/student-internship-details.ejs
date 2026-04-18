@@ -81,6 +81,20 @@
                 </div>
               </div>
             </div>
+            <div class="section-glass mb-4">
+              <h4 class="section-heading mb-3">Application</h4>
+              <% if (existingApplication) { %>
+                <button class="btn btn-secondary w-100" disabled>
+                   Already Applied
+                </button>
+              <% } else { %>
+                <form action="/applications/apply/<%= internship.id %>" method="POST">
+                  <button type="submit" class="btn btn-primary w-100">
+                     Apply Now
+                  </button>
+                </form>
+              <% } %>
+            </div>
 
             <div class="section-glass">
               <h4 class="section-heading mb-3">Requirements</h4>
