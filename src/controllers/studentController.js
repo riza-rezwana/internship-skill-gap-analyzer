@@ -6,7 +6,7 @@ const getDashboard = async (req, res) => {
 
     const student = await prisma.student.findUnique({
       where: { id: studentId },
-      include: { studentskill: true }
+      include: { skills: true }
     });
 
     res.render('dashboard', {
@@ -26,7 +26,7 @@ const getEditProfile = async (req, res) => {
 
     const student = await prisma.student.findUnique({
       where: { id: studentId },
-      include: { studentskill: true }
+      include: { skills: true }
     });
 
     res.render('edit-profile', {
@@ -61,7 +61,8 @@ const updateProfile = async (req, res) => {
       locationPreferences,
       sectorPreferences,
       additionalInformation,
-      studentskill
+      studentskill,
+      skills
     } = req.body;
 
     const resumeFile = req.file ? `/uploads/resumes/${req.file.filename}` : undefined;
@@ -89,16 +90,18 @@ const updateProfile = async (req, res) => {
       }
     });
 
-    await prisma.studentskill.deleteMany({
+    await prisma.studentSkill.deleteMany({
       where: { studentId }
     });
 
-    const skillArray = studentskill
-      ? studentskill.split(',').map(skill => skill.trim()).filter(Boolean)
+    const rawSkills = skills || studentskill;
+
+    const skillArray = rawSkills
+      ? rawSkills.split(',').map(skill => skill.trim()).filter(Boolean)
       : [];
 
     if (skillArray.length > 0) {
-      await prisma.studentskill.createMany({
+      await prisma.studentSkill.createMany({
         data: skillArray.map(skill => ({
           name: skill,
           studentId

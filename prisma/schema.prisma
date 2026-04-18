@@ -40,7 +40,7 @@ model student {
   additionalInformation String?        @db.Text
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
-  studentskill          studentskill[]
+  skills                studentSkill[]
 }
 
 model company {
@@ -90,11 +90,12 @@ model internship {
   @@index([companyId], map: "Internship_companyId_fkey")
 }
 
-model studentskill {
+model studentSkill {
   id        Int     @id @default(autoincrement())
   name      String
   studentId Int
   student   student @relation(fields: [studentId], references: [id], onDelete: Cascade, map: "StudentSkill_studentId_fkey")
 
   @@index([studentId], map: "StudentSkill_studentId_fkey")
+  @@map("studentskill")
 }

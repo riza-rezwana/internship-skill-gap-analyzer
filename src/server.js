@@ -7,6 +7,8 @@ const authRoutes = require('./routes/authRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const companyRoutes = require('./routes/companyRoutes');
 const internshipRoutes = require('./routes/internshipRoutes');
+const careerRecommendationRoutes = require('./routes/careerRecommendationRoutes');
+const careerReportRoutes = require('./routes/careerReportRoutes');
 ///////
 const express = require("express");
 const path = require("path");
@@ -50,6 +52,8 @@ app.use('/', authRoutes);
 
 app.use("/external-jobs", externalJobsRoutes);
 app.use('/student', studentRoutes);
+app.use('/student', careerRecommendationRoutes);
+app.use('/student', careerReportRoutes);
 ////////////////
 
 app.use('/company', companyRoutes);
