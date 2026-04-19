@@ -31,7 +31,8 @@ const registerStudent = async (req, res) => {
       locationPreferences,
       sectorPreferences,
       additionalInformation,
-      studentskill
+      studentskill,
+      skills
     } = req.body;
 
     if (!firstName || !lastName || !email || !password || !confirmPassword) {
@@ -57,8 +58,10 @@ const registerStudent = async (req, res) => {
 
     const resumeFile = req.file ? `/uploads/${req.file.filename}` : null;
 
-    const skillArray = studentskill
-      ? studentskill.split(',').map(skill => skill.trim()).filter(Boolean)
+    const rawSkills = skills || studentskill;
+
+    const skillArray = rawSkills
+      ? rawSkills.split(',').map(skill => skill.trim()).filter(Boolean)
       : [];
 
     await prisma.student.create({
@@ -82,7 +85,7 @@ const registerStudent = async (req, res) => {
         locationPreferences,
         sectorPreferences,
         additionalInformation,
-        studentskill: {
+        skills: {
           create: skillArray.map(skill => ({ name: skill }))
         }
       }
@@ -102,7 +105,7 @@ const loginStudent = async (req, res) => {
 
     const student = await prisma.student.findUnique({
       where: { email },
-      include: { studentskill: true }
+      include: { skills: true }
     });
 
     if (!student) {
