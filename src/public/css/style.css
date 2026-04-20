@@ -934,3 +934,379 @@ input::placeholder {
     margin: 0 0 12px 0;
   }
 }
+/* Gradient Table Container */
+.gradient-table {
+  background: linear-gradient(135deg, rgba(30, 30, 60, 0.8), rgba(80, 0, 120, 0.6));
+  backdrop-filter: blur(12px);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+/* Table */
+.gradient-table table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #fff;
+}
+
+/* Header */
+.gradient-table thead {
+  background: linear-gradient(135deg, #1f1f3a, #4a0072);
+}
+
+.gradient-table th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Body */
+.gradient-table td {
+  padding: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Row hover */
+.gradient-table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+/* Status badges */
+.status-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Different statuses */
+.status-applied {
+  background: linear-gradient(135deg, #fbc02d, #ffeb3b);
+  color: #000;
+}
+
+.status-reviewed {
+  background: linear-gradient(135deg, #2196f3, #64b5f6);
+}
+
+.status-shortlisted {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+}
+
+.status-rejected {
+  background: linear-gradient(135deg, #e53935, #ef5350);
+}
+/* =========================
+   COMPANY APPLICATIONS UI
+========================= */
+
+.company-applications-page {
+  animation: fadeUpIn 0.6s ease;
+}
+
+.gradient-page-title {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 700;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+}
+
+.text-light-emphasis {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.applications-toolbar {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  min-width: min(100%, 420px);
+}
+
+.applications-toolbar .glass-input {
+  min-width: 180px;
+  flex: 1;
+}
+
+.applications-table-shell {
+  position: relative;
+  border-radius: 22px;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(10, 12, 40, 0.92), rgba(62, 9, 90, 0.82)),
+    linear-gradient(120deg, rgba(255,255,255,0.08), rgba(255,255,255,0.02));
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow:
+    0 18px 60px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255,255,255,0.05);
+}
+
+.applications-table-shell::before {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  background: linear-gradient(
+    120deg,
+    rgba(115, 87, 255, 0.10),
+    rgba(0, 212, 255, 0.08),
+    rgba(255, 0, 153, 0.08)
+  );
+  animation: gradientSweep 12s linear infinite;
+  pointer-events: none;
+}
+
+.applications-table {
+  position: relative;
+  z-index: 1;
+  color: #fff;
+  margin: 0;
+}
+
+.applications-table thead th {
+  background: rgba(17, 24, 39, 0.72);
+  color: #fff;
+  border-color: rgba(255,255,255,0.10);
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 18px 14px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.applications-table tbody td {
+  background: rgba(255,255,255,0.84);
+  color: #111827;
+  border-color: rgba(17, 24, 39, 0.08);
+  padding: 16px 12px;
+  vertical-align: middle;
+  transition: transform 0.25s ease, background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.applications-table tbody tr {
+  transition: transform 0.25s ease;
+}
+
+.applications-table tbody tr:hover td {
+  background: rgba(255,255,255,0.93);
+  box-shadow: inset 0 0 0 9999px rgba(124, 58, 237, 0.04);
+}
+
+.application-row {
+  animation: rowFade 0.45s ease both;
+}
+
+.application-row:nth-child(2n) {
+  animation-delay: 0.05s;
+}
+
+.application-row:nth-child(3n) {
+  animation-delay: 0.1s;
+}
+
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  animation: pulseSoft 2.6s infinite;
+}
+
+.status-applied {
+  color: #2d1600;
+  background: linear-gradient(135deg, #ffd54f, #ffb300);
+}
+
+.status-reviewed {
+  color: #fff;
+  background: linear-gradient(135deg, #1e88e5, #42a5f5);
+}
+
+.status-interview {
+  color: #fff;
+  background: linear-gradient(135deg, #7c3aed, #a855f7);
+}
+
+.status-rejected {
+  color: #fff;
+  background: linear-gradient(135deg, #e53935, #ef5350);
+}
+
+.status-neutral {
+  color: #fff;
+  background: linear-gradient(135deg, #6b7280, #9ca3af);
+}
+
+.interview-info-box {
+  border-radius: 14px;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(124, 58, 237, 0.08), rgba(59, 130, 246, 0.08));
+  border: 1px solid rgba(124, 58, 237, 0.10);
+}
+
+.table-link {
+  color: #6d28d9;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.table-link:hover {
+  text-decoration: underline;
+}
+
+.update-form {
+  min-width: 260px;
+}
+
+.glass-input {
+  background: rgba(255,255,255,0.72) !important;
+  border: 1px solid rgba(255,255,255,0.38) !important;
+  color: #111827 !important;
+  box-shadow: none !important;
+  transition: all 0.25s ease;
+}
+
+.glass-input::placeholder {
+  color: rgba(17, 24, 39, 0.45);
+}
+
+.glass-input:focus {
+  background: rgba(255,255,255,0.92) !important;
+  border-color: rgba(124, 58, 237, 0.45) !important;
+  box-shadow: 0 0 0 0.2rem rgba(124, 58, 237, 0.12) !important;
+}
+
+.update-btn {
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: linear-gradient(135deg, #11998e, #38ef7d);
+  box-shadow: 0 12px 24px rgba(17, 153, 142, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.update-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px rgba(17, 153, 142, 0.30);
+  color: #fff;
+}
+
+.update-btn:active {
+  transform: translateY(0);
+}
+
+/* Responsive stacked layout */
+@media (max-width: 991.98px) {
+  .applications-toolbar {
+    width: 100%;
+  }
+
+  .applications-toolbar .glass-input {
+    min-width: 100%;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .applications-table thead {
+    display: none;
+  }
+
+  .applications-table,
+  .applications-table tbody,
+  .applications-table tr,
+  .applications-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .applications-table tbody tr {
+    margin-bottom: 16px;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+  }
+
+  .applications-table tbody td {
+    padding: 14px 14px 14px 46%;
+    position: relative;
+    min-height: 58px;
+    border-bottom: 1px solid rgba(17,24,39,0.06);
+  }
+
+  .applications-table tbody td:last-child {
+    border-bottom: none;
+  }
+
+  .applications-table tbody td::before {
+    content: attr(data-label);
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    width: 40%;
+    font-weight: 700;
+    color: #4b5563;
+  }
+
+  .update-form {
+    min-width: 100%;
+  }
+
+  .update-cell,
+  .interview-info-cell {
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Animations */
+@keyframes gradientSweep {
+  0% {
+    transform: translateX(-8%) rotate(0deg);
+  }
+  50% {
+    transform: translateX(8%) rotate(180deg);
+  }
+  100% {
+    transform: translateX(-8%) rotate(360deg);
+  }
+}
+
+@keyframes pulseSoft {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+  }
+}
+
+@keyframes rowFade {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeUpIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

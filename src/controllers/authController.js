@@ -31,7 +31,6 @@ const registerStudent = async (req, res) => {
       locationPreferences,
       sectorPreferences,
       additionalInformation,
-      studentskill,
       skills
     } = req.body;
 
@@ -61,8 +60,8 @@ const registerStudent = async (req, res) => {
     const rawSkills = skills || studentskill;
 
     const skillArray = rawSkills
-      ? rawSkills.split(',').map(skill => skill.trim()).filter(Boolean)
-      : [];
+       ? rawSkills.split(',').map(skill => skill.trim()).filter(Boolean)
+       : [];
 
     await prisma.student.create({
       data: {

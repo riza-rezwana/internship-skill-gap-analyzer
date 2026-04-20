@@ -96,7 +96,8 @@ const createInternship = async (req, res) => {
       preferredFieldOfStudy,
       minimumGpaPercentage,
       graduationYearRange,
-      additionalPreferences
+      additionalPreferences,
+      applicationDeadline
     } = req.body;
 
     if (!title || !roleDescription) {
@@ -118,6 +119,7 @@ const createInternship = async (req, res) => {
         numberOfPositions: numberOfPositions ? parseInt(numberOfPositions) : 1,
         requiredSkills,
         minimumDegreeLevel,
+        applicationDeadline: applicationDeadline ? new Date(applicationDeadline) : null,
         preferredFieldOfStudy,
         minimumGpaPercentage,
         graduationYearRange,
@@ -200,7 +202,8 @@ const updateInternship = async (req, res) => {
       preferredFieldOfStudy,
       minimumGpaPercentage,
       graduationYearRange,
-      additionalPreferences
+      additionalPreferences,
+      applicationDeadline
     } = req.body;
 
     const internship = await prisma.internship.findFirst({
@@ -226,6 +229,7 @@ const updateInternship = async (req, res) => {
         stipend: stipend ? parseFloat(stipend) : null,
         roleDescription,
         learningOutcomes,
+        applicationDeadline: applicationDeadline ? new Date(applicationDeadline) : null,
         numberOfPositions: numberOfPositions ? parseInt(numberOfPositions) : 1,
         requiredSkills,
         minimumDegreeLevel,
@@ -350,10 +354,26 @@ const getInternshipDetails = async (req, res) => {
       return res.redirect('/student/internships');
     }
 
-    res.render('student-internship-details', {
-      title: internship.title,
-      internship
+    const studentId = req.session.student?.id;
+
+    let existingApplication = null;
+
+    if (studentId) {
+      existingApplication = await prisma.application.findUnique({
+         where: {
+           studentId_internshipId: {
+           studentId,
+           internshipId
+          }
+      }
     });
+    }
+
+   res.render('student-internship-details', {
+     title: internship.title,
+     internship,
+     existingApplication
+   });
   } catch (error) {
     console.error(error);
     req.flash('error_msg', 'Failed to load internship details.');
@@ -372,13 +392,19 @@ const applyToInternship = async (req, res) => {
         status: 'ACTIVE'
       }
     });
+   
 
     if (!internship) {
       req.flash('error_msg', 'Internship not found or closed.');
       return res.redirect('/student/internships');
     }
+     // ❗ ADD THIS BLOCK RIGHT HERE
+   if (internship.applicationDeadline && new Date() > new Date(internship.applicationDeadline)) {
+      req.flash('error_msg', 'Application deadline has passed.');
+      return res.redirect(`/student/internships/${internshipId}`);
+    }
 
-    const existingApplication = await prisma.internshipApplication.findUnique({
+    const existingApplication = await prisma.application.findUnique({
       where: {
         studentId_internshipId: {
           studentId,
@@ -392,16 +418,17 @@ const applyToInternship = async (req, res) => {
       return res.redirect(`/student/internships/${internshipId}`);
     }
 
-    await prisma.internshipApplication.create({
+    await prisma.application.create({
       data: {
         studentId,
         internshipId,
-        status: 'PENDING'
+        status: 'APPLIED'
       }
     });
 
     req.flash('success_msg', 'Application submitted successfully.');
-    res.redirect('/student/internships');
+    //res.redirect('/student/internships');
+    res.redirect(`/student/internships/${internshipId}`);
   } catch (error) {
     console.error(error);
     req.flash('error_msg', 'Failed to apply.');

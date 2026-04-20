@@ -61,7 +61,7 @@ const updateProfile = async (req, res) => {
       locationPreferences,
       sectorPreferences,
       additionalInformation,
-      studentskill,
+      
       skills
     } = req.body;
 
@@ -94,6 +94,7 @@ const updateProfile = async (req, res) => {
       where: { studentId }
     });
 
+    
     const rawSkills = skills || studentskill;
 
     const skillArray = rawSkills

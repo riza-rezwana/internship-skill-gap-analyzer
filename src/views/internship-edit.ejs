@@ -85,6 +85,15 @@
                 <label class="custom-label">Graduation Year Range</label>
                 <input type="text" name="graduationYearRange" value="<%= internship.graduationYearRange || '' %>" class="form-control custom-input">
               </div>
+              <div class="mb-3">
+                <label class="form-label">Application Deadline</label>
+                <input
+                  type="date"
+                  name="applicationDeadline"
+                  class="form-control"
+                  value="<%= internship.applicationDeadline ? new Date(internship.applicationDeadline).toISOString().split('T')[0] : '' %>"
+                >
+              </div>
 
               <div class="col-12">
                 <label class="custom-label">Additional Preferences</label>
