@@ -7,6 +7,13 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ApplicationStatus {
+  APPLIED
+  REVIEWED
+  INTERVIEW_SCHEDULED
+  REJECTED
+}
+
 model certificate {
   id               Int      @id @default(autoincrement())
   studentName      String
@@ -41,6 +48,7 @@ model student {
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
   skills                studentSkill[]
+  applications          application[]
 }
 
 model company {
@@ -60,12 +68,12 @@ model company {
   registrationCertificate String?
   gstCertificate          String?
   createdAt               DateTime     @default(now())
-  updatedAt               DateTime
+  updatedAt               DateTime     @updatedAt
   internship              internship[]
 }
 
 model internship {
-  id                    Int      @id @default(autoincrement())
+  id                    Int           @id @default(autoincrement())
   companyId             Int
   title                 String
   department            String?
@@ -73,21 +81,44 @@ model internship {
   workMode              String?
   durationMonths        Int?
   stipend               Float?
-  roleDescription       String   @db.Text
-  learningOutcomes      String?  @db.Text
-  numberOfPositions     Int      @default(1)
-  requiredSkills        String?  @db.Text
+  roleDescription       String        @db.Text
+  learningOutcomes      String?       @db.Text
+  numberOfPositions     Int           @default(1)
+  requiredSkills        String?       @db.Text
   minimumDegreeLevel    String?
   preferredFieldOfStudy String?
   minimumGpaPercentage  String?
   graduationYearRange   String?
-  additionalPreferences String?  @db.Text
-  status                String   @default("ACTIVE")
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime
-  company               company  @relation(fields: [companyId], references: [id], onDelete: Cascade, map: "Internship_companyId_fkey")
+  additionalPreferences String?       @db.Text
+  applicationDeadline   DateTime?
+  status                String        @default("ACTIVE")
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  company               company       @relation(fields: [companyId], references: [id], onDelete: Cascade, map: "Internship_companyId_fkey")
+  applications          application[]
 
   @@index([companyId], map: "Internship_companyId_fkey")
+}
+
+model application {
+  id                Int               @id @default(autoincrement())
+  studentId         Int
+  internshipId      Int
+  status            ApplicationStatus @default(APPLIED)
+  interviewType     String?
+  interviewDateTime DateTime?
+  interviewLocation String?
+  interviewMeetLink String?
+  interviewNote     String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  student    student    @relation(fields: [studentId], references: [id], onDelete: Cascade, map: "Application_studentId_fkey")
+  internship internship @relation(fields: [internshipId], references: [id], onDelete: Cascade, map: "Application_internshipId_fkey")
+
+  @@unique([studentId, internshipId], map: "Application_studentId_internshipId_key")
+  @@index([studentId], map: "Application_studentId_fkey")
+  @@index([internshipId], map: "Application_internshipId_fkey")
 }
 
 model studentSkill {

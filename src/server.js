@@ -7,6 +7,9 @@ const authRoutes = require('./routes/authRoutes');
 const studentRoutes = require('./routes/studentRoutes');
 const companyRoutes = require('./routes/companyRoutes');
 const internshipRoutes = require('./routes/internshipRoutes');
+const applicationRoutes = require("./routes/applicationRoutes");
+const { startDeadlineReminderJob } = require("./services/deadlineReminderService");
+const companyStudentProfileRoutes = require("./routes/companyStudentProfileRoutes");
 const careerRecommendationRoutes = require('./routes/careerRecommendationRoutes');
 const careerReportRoutes = require('./routes/careerReportRoutes');
 ///////
@@ -27,7 +30,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-//////
 app.use(methodOverride('_method'));
 
 app.use(
@@ -47,6 +49,7 @@ app.use((req, res, next) => {
   res.locals.currentCompany = req.session.company || null;
   next();
 });
+
 app.use('/', homeRoutes);
 app.use('/', authRoutes);
 
@@ -59,11 +62,12 @@ app.use('/student', careerReportRoutes);
 app.use('/company', companyRoutes);
 app.use('/company/internships', internshipRoutes);
 
-
-
 app.use("/certificates", certificateRoutes);
+app.use("/applications", applicationRoutes);
+app.use("/company/students", companyStudentProfileRoutes);
 
 
+startDeadlineReminderJob();
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
