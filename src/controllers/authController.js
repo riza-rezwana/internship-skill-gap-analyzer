@@ -57,9 +57,11 @@ const registerStudent = async (req, res) => {
 
     const resumeFile = req.file ? `/uploads/${req.file.filename}` : null;
 
-    const skillArray = skills
-      ? skills.split(',').map(skill => skill.trim()).filter(Boolean)
-      : [];
+    const rawSkills = skills || studentskill;
+
+    const skillArray = rawSkills
+       ? rawSkills.split(',').map(skill => skill.trim()).filter(Boolean)
+       : [];
 
     await prisma.student.create({
       data: {

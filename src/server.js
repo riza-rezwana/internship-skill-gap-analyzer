@@ -10,6 +10,9 @@ const internshipRoutes = require('./routes/internshipRoutes');
 const applicationRoutes = require("./routes/applicationRoutes");
 const { startDeadlineReminderJob } = require("./services/deadlineReminderService");
 const companyStudentProfileRoutes = require("./routes/companyStudentProfileRoutes");
+const careerRecommendationRoutes = require('./routes/careerRecommendationRoutes');
+const careerReportRoutes = require('./routes/careerReportRoutes');
+///////
 const express = require("express");
 const path = require("path");
 require("dotenv").config();
@@ -52,6 +55,9 @@ app.use('/', authRoutes);
 
 app.use("/external-jobs", externalJobsRoutes);
 app.use('/student', studentRoutes);
+app.use('/student', careerRecommendationRoutes);
+app.use('/student', careerReportRoutes);
+////////////////
 
 app.use('/company', companyRoutes);
 app.use('/company/internships', internshipRoutes);

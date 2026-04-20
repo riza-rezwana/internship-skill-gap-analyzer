@@ -61,6 +61,7 @@ const updateProfile = async (req, res) => {
       locationPreferences,
       sectorPreferences,
       additionalInformation,
+      
       skills
     } = req.body;
 
@@ -93,8 +94,11 @@ const updateProfile = async (req, res) => {
       where: { studentId }
     });
 
-    const skillArray = skills
-      ? skills.split(',').map(skill => skill.trim()).filter(Boolean)
+    
+    const rawSkills = skills || studentskill;
+
+    const skillArray = rawSkills
+      ? rawSkills.split(',').map(skill => skill.trim()).filter(Boolean)
       : [];
 
     if (skillArray.length > 0) {
