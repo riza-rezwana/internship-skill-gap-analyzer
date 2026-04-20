@@ -165,6 +165,11 @@ const getCareerReportData = async (studentId) => {
 
 const getCareerReport = async (req, res) => {
   try {
+    if (!req.session || !req.session.student || !req.session.student.id) {
+      req.flash('error_msg', 'Please log in first.');
+      return res.redirect('/student/login');
+    }
+
     const studentId = req.session.student.id;
     const reportData = await getCareerReportData(studentId);
 

@@ -122,7 +122,8 @@ const createInternship = async (req, res) => {
         minimumGpaPercentage,
         graduationYearRange,
         additionalPreferences,
-        status: 'ACTIVE'
+        status: 'ACTIVE',
+        updatedAt: new Date()
       }
     });
 

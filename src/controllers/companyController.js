@@ -71,7 +71,8 @@ const registerCompany = async (req, res) => {
         phoneNumber,
         officeAddress,
         registrationCertificate,
-        gstCertificate
+        gstCertificate,
+        updatedAt: new Date()
       }
     });
 
