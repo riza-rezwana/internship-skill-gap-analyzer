@@ -8,6 +8,10 @@ function calculateRating(durationMonths) {
 }
 
 const showCertificateForm = (req, res) => {
+  if (!req.session.student) {
+    return res.status(401).send("Please log in first");
+  }
+
   res.render("certificateForm");
 };
 
@@ -51,7 +55,11 @@ const showCertificateViewer = async (req, res) => {
 
 const uploadCertificate = async (req, res) => {
   try {
-    const { studentName, companyName, durationMonths } = req.body;
+    const { companyName, durationMonths } = req.body;
+
+    if (!req.session.student) {
+      return res.status(401).send("Please log in first");
+    }
 
     if (!req.file) {
       return res.status(400).send("Certificate file is required");
@@ -59,10 +67,12 @@ const uploadCertificate = async (req, res) => {
 
     const months = parseInt(durationMonths);
     const rating = calculateRating(months);
+    const currentStudent = req.session.student;
 
     const certificate = await prisma.certificate.create({
       data: {
-        studentName,
+        studentId: currentStudent.id,
+        studentName: `${currentStudent.firstName} ${currentStudent.lastName}`,
         companyName,
         certificateFile: `/uploads/${req.file.filename}`,
         durationMonths: months,

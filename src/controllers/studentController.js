@@ -9,9 +9,15 @@ const getDashboard = async (req, res) => {
       include: { skills: true }
     });
 
+    const certificate = await prisma.certificate.findFirst({
+      where: { studentId },
+      orderBy: { id: 'desc' }
+    });
+
     res.render('dashboard', {
       title: 'Student Dashboard',
-      student
+      student,
+      certificate
     });
   } catch (error) {
     console.error(error);
