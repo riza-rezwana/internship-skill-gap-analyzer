@@ -150,15 +150,21 @@
   <div class="container">
     
     <div class="action-bar">
-     <% if (currentCompany) { %>
-       <a href="/company/internships/create" class="post-btn">
-         + Post Job Opportunity
-       </a>
-     <% } else { %>
-       <a href="/company/register" class="post-btn">
-         + Register as Company
-       </a>
-     <% } %>
+    
+      <% if (currentCompany) { %>
+        <!-- Company logged in -->
+        <a href="/company/internships/create" class="post-btn">
+          + Post Job Opportunity
+        </a>
+    
+      <% } else if (!currentStudent) { %>
+        <!-- Only show if NOT logged in at all -->
+        <a href="/company/register" class="post-btn">
+          + Company Signup
+        </a>
+    
+      <% } %>
+    
     </div>
 
     <h1>Job Opportunities</h1>
