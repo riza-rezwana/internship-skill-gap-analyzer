@@ -7,21 +7,18 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum ApplicationStatus {
-  APPLIED
-  REVIEWED
-  INTERVIEW_SCHEDULED
-  REJECTED
-}
-
 model certificate {
   id               Int      @id @default(autoincrement())
+  studentId        Int?
   studentName      String
   companyName      String
   certificateFile  String
   durationMonths   Int
   experienceRating Int
   createdAt        DateTime @default(now())
+  
+  student          student?  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  @@index([studentId])
 }
 
 model student {
@@ -47,8 +44,9 @@ model student {
   additionalInformation String?        @db.Text
   createdAt             DateTime       @default(now())
   updatedAt             DateTime       @updatedAt
-  skills                studentSkill[]
   applications          application[]
+  skills                studentSkill[]
+  certificates          certificate[]
 }
 
 model company {
@@ -74,28 +72,28 @@ model company {
 
 model internship {
   id                    Int           @id @default(autoincrement())
-  companyId             Int
-  title                 String
-  department            String?
   location              String?
-  workMode              String?
-  durationMonths        Int?
-  stipend               Float?
-  roleDescription       String        @db.Text
-  learningOutcomes      String?       @db.Text
-  numberOfPositions     Int           @default(1)
-  requiredSkills        String?       @db.Text
-  minimumDegreeLevel    String?
-  preferredFieldOfStudy String?
-  minimumGpaPercentage  String?
-  graduationYearRange   String?
-  additionalPreferences String?       @db.Text
-  applicationDeadline   DateTime?
-  status                String        @default("ACTIVE")
   createdAt             DateTime      @default(now())
+  additionalPreferences String?       @db.Text
+  companyId             Int
+  department            String?
+  durationMonths        Int?
+  graduationYearRange   String?
+  learningOutcomes      String?       @db.Text
+  minimumDegreeLevel    String?
+  minimumGpaPercentage  String?
+  numberOfPositions     Int           @default(1)
+  preferredFieldOfStudy String?
+  requiredSkills        String?       @db.Text
+  roleDescription       String        @db.Text
+  status                String        @default("ACTIVE")
+  stipend               Float?
+  title                 String
   updatedAt             DateTime      @updatedAt
-  company               company       @relation(fields: [companyId], references: [id], onDelete: Cascade, map: "Internship_companyId_fkey")
+  workMode              String?
+  applicationDeadline   DateTime?
   applications          application[]
+  company               company       @relation(fields: [companyId], references: [id], onDelete: Cascade, map: "Internship_companyId_fkey")
 
   @@index([companyId], map: "Internship_companyId_fkey")
 }
@@ -105,16 +103,15 @@ model application {
   studentId         Int
   internshipId      Int
   status            ApplicationStatus @default(APPLIED)
-  interviewType     String?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
   interviewDateTime DateTime?
   interviewLocation String?
   interviewMeetLink String?
   interviewNote     String?
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @updatedAt
-
-  student    student    @relation(fields: [studentId], references: [id], onDelete: Cascade, map: "Application_studentId_fkey")
-  internship internship @relation(fields: [internshipId], references: [id], onDelete: Cascade, map: "Application_internshipId_fkey")
+  interviewType     String?
+  internship        internship        @relation(fields: [internshipId], references: [id], onDelete: Cascade, map: "Application_internshipId_fkey")
+  student           student           @relation(fields: [studentId], references: [id], onDelete: Cascade, map: "Application_studentId_fkey")
 
   @@unique([studentId, internshipId], map: "Application_studentId_internshipId_key")
   @@index([studentId], map: "Application_studentId_fkey")
@@ -129,4 +126,11 @@ model studentSkill {
 
   @@index([studentId], map: "StudentSkill_studentId_fkey")
   @@map("studentskill")
+}
+
+enum ApplicationStatus {
+  APPLIED
+  REVIEWED
+  INTERVIEW_SCHEDULED
+  REJECTED
 }

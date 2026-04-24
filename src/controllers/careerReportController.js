@@ -70,24 +70,53 @@ const calculateMatchPercentage = (student, internship) => {
 
 const calculateExternalJobMatch = (student, job) => {
   const studentSkills = student.skills.map(skill => normalizeText(skill.name));
+  const studentDepartment = normalizeText(student.department);
+  const studentSectorPrefs = parseCommaSeparated(student.sectorPreferences);
+  const studentLocationPrefs = parseCommaSeparated(student.locationPreferences);
 
-  const jobText = (
-    (job.title || '') +
-    ' ' +
-    (job.company_name || '') +
-    ' ' +
-    (Array.isArray(job.tags) ? job.tags.join(' ') : '')
-  ).toLowerCase();
+  const title = normalizeText(job.title);
+  const company = normalizeText(job.company_name);
+  const location = normalizeText(job.location);
+  const tags = Array.isArray(job.tags) ? job.tags.map(tag => normalizeText(tag)) : [];
 
-  const matchedSkills = studentSkills.filter(skill => jobText.includes(skill));
+  const searchableText = `${title} ${company} ${tags.join(' ')}`;
 
-  const score = Math.min(
-    (matchedSkills.length / (studentSkills.length || 1)) * 100,
-    100
-  );
+  let matchedSkills = studentSkills.filter(skill => {
+    return searchableText.includes(skill) && skill.length > 2;
+  });
+  matchedSkills = [...new Set(matchedSkills)];
+
+  let skillScore = 0;
+  if (studentSkills.length > 0) {
+    skillScore = matchedSkills.length > 0
+      ? (matchedSkills.length / studentSkills.length) * 70
+      : 0;
+  }
+
+  let preferenceScore = 0;
+
+  if (studentDepartment && searchableText.includes(studentDepartment)) {
+    preferenceScore += 5;
+  }
+
+  const sectorMatched = studentSectorPrefs.some(pref => searchableText.includes(pref));
+  if (sectorMatched) {
+    preferenceScore += 5;
+  }
+
+  let locationScore = 0;
+  if (
+    studentLocationPrefs.some(pref => location.includes(pref)) ||
+    (job.remote === true && studentLocationPrefs.includes('remote'))
+  ) {
+    locationScore += 10;
+  }
+
+  let totalScore = skillScore + preferenceScore + locationScore;
+  if (totalScore > 100) totalScore = 100;
 
   return {
-    matchPercentage: Math.round(score),
+    matchPercentage: Math.round(totalScore),
     matchedSkills
   };
 };
@@ -99,6 +128,11 @@ const getCareerReportData = async (studentId) => {
   });
 
   if (!student) return null;
+
+  const certificate = await prisma.certificate.findFirst({
+    where: { studentId },
+    orderBy: { id: 'desc' }
+  });
 
   const internships = await prisma.internship.findMany({
     include: { company: true },
@@ -155,6 +189,7 @@ const getCareerReportData = async (studentId) => {
 
   return {
     student,
+    certificate,
     analyzedInternships: analyzedInternships.slice(0, 3),
     recommendedInternships: analyzedInternships
       .filter(item => item.matchPercentage > 0)
@@ -165,6 +200,11 @@ const getCareerReportData = async (studentId) => {
 
 const getCareerReport = async (req, res) => {
   try {
+    if (!req.session || !req.session.student || !req.session.student.id) {
+      req.flash('error_msg', 'Please log in first.');
+      return res.redirect('/student/login');
+    }
+
     const studentId = req.session.student.id;
     const reportData = await getCareerReportData(studentId);
 
@@ -195,6 +235,7 @@ const downloadCareerReportPdf = async (req, res) => {
 
     const {
       student,
+      certificate,
       analyzedInternships,
       recommendedInternships,
       externalRecommendations
@@ -234,6 +275,19 @@ const downloadCareerReportPdf = async (req, res) => {
     doc.fontSize(14).text('Experience', { underline: true });
     doc.moveDown(0.5);
     doc.fontSize(12).text(student.experience || 'No experience information added yet.');
+    doc.moveDown();
+
+    doc.fontSize(14).text('Certificate & Practical Experience', { underline: true });
+    doc.moveDown(0.5);
+
+    if (certificate) {
+      doc.fontSize(12).text(`Company: ${certificate.companyName || 'N/A'}`);
+      doc.text(`Internship Duration: ${certificate.durationMonths || 'N/A'} month(s)`);
+      doc.text(`Practical Experience Rating: ${certificate.experienceRating || 'N/A'}/5`);
+    } else {
+      doc.fontSize(12).text('No certificate information added yet.');
+    }
+
     doc.moveDown();
 
     doc.fontSize(14).text('Recommended Internships', { underline: true });
@@ -320,10 +374,10 @@ const downloadCareerReportPdf = async (req, res) => {
     res.redirect('/student/career-report');
   }
 };
+
 const downloadCareerReportCsv = async (req, res) => {
   try {
     const studentId = req.session.student.id;
-
     const reportData = await getCareerReportData(studentId);
 
     if (!reportData) {
@@ -331,7 +385,7 @@ const downloadCareerReportCsv = async (req, res) => {
     }
 
     const {
-      student,
+      certificate,
       recommendedInternships,
       externalRecommendations,
       analyzedInternships
@@ -339,22 +393,24 @@ const downloadCareerReportCsv = async (req, res) => {
 
     let csv = '';
 
-    // Headers
     csv += 'Section,Title,Company,Location,Work Mode,Match %,Matched Skills,Missing Skills\n';
 
-    // Recommended Internships
+    if (certificate) {
+      csv += `Certificate,"Practical Experience","${certificate.companyName}","-","${certificate.durationMonths} month(s)","${certificate.experienceRating} out of 5","-","-"\n`;
+    } else {
+      csv += 'Certificate & Practical Experience,No certificate uploaded,-,-,-,-,-,-\n';
+    }
+
     recommendedInternships.forEach(item => {
-      csv += `Recommended Internship,${item.title},${item.company},${item.location},${item.workMode},${item.matchPercentage},${item.matchedSkills.join('|')},${item.missingSkills.join('|')}\n`;
+      csv += `Recommended Internship,"${item.title}","${item.company}","${item.location}","${item.workMode}",${item.matchPercentage},"${item.matchedSkills.join('|')}","${item.missingSkills.join('|')}"\n`;
     });
 
-    // External Jobs
     externalRecommendations.forEach(item => {
-      csv += `External Job,${item.title},${item.company},${item.location},${item.workMode},${item.matchPercentage},${item.matchedSkills.join('|')},-\n`;
+      csv += `External Job,"${item.title}","${item.company}","${item.location}","${item.workMode}",${item.matchPercentage},"${item.matchedSkills.join('|')}","-"\n`;
     });
 
-    // Skill Gap
     analyzedInternships.forEach(item => {
-      csv += `Skill Gap,${item.title},${item.company},${item.location},${item.workMode},${item.matchPercentage},${item.matchedSkills.join('|')},${item.missingSkills.join('|')}\n`;
+      csv += `Skill Gap,"${item.title}","${item.company}","${item.location}","${item.workMode}",${item.matchPercentage},"${item.matchedSkills.join('|')}","${item.missingSkills.join('|')}"\n`;
     });
 
     res.setHeader('Content-Type', 'text/csv');
@@ -364,7 +420,6 @@ const downloadCareerReportCsv = async (req, res) => {
     );
 
     res.send(csv);
-
   } catch (error) {
     console.error(error);
     res.redirect('/student/career-report');

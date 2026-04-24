@@ -17,6 +17,8 @@ const express = require("express");
 const path = require("path");
 require("dotenv").config();
 
+console.log("DATABASE_URL =", process.env.DATABASE_URL);
+
 const certificateRoutes = require("./routes/certificateRoutes");
 const externalJobsRoutes = require("./routes/externalJobsRoutes");
 

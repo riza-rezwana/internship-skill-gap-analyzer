@@ -85,17 +85,22 @@ const fetchExternalJobsForRecommendation = async (keyword = '', location = '') =
 
   let jobs = result.data || [];
 
+  const keywordTokens = keyword
+    .toLowerCase()
+    .split(/[\s,]+/)
+    .map(token => token.trim())
+    .filter(token => token.length > 2);
+
   jobs = jobs.filter((job) => {
     const title = (job.title || '').toLowerCase();
     const company = (job.company_name || '').toLowerCase();
     const jobLocation = (job.location || '').toLowerCase();
     const tags = Array.isArray(job.tags) ? job.tags.join(' ').toLowerCase() : '';
+    const searchableText = `${title} ${company} ${tags}`;
 
     const matchKeyword =
-      !keyword ||
-      title.includes(keyword.toLowerCase()) ||
-      company.includes(keyword.toLowerCase()) ||
-      tags.includes(keyword.toLowerCase());
+      keywordTokens.length === 0 ||
+      keywordTokens.some(token => searchableText.includes(token));
 
     const matchLocation =
       !location || jobLocation.includes(location.toLowerCase());
@@ -200,9 +205,7 @@ const getRecommendedInternships = async (req, res) => {
 
     const keyword = keywordParts.join(' ').trim();
 
-    const location = student.locationPreferences
-      ? student.locationPreferences.split(',')[0].trim()
-      : '';
+    const location = '';
 
     const externalJobs = await fetchExternalJobsForRecommendation(keyword, location);
 

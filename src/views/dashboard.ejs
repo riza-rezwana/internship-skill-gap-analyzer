@@ -39,7 +39,7 @@
 
         <div class="row g-4">
           <div class="col-lg-6">
-            <div class="section-glass dashboard-card h-100">
+            <div class="section-glass dashboard-card h-100 text-center">
               <h4 class="section-heading mb-3">Personal Information</h4>
 
               <div class="dashboard-info-list">
@@ -219,6 +219,51 @@
                   View Recommendations
                 </a>
               </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="section-glass dashboard-card h-100 text-center d-flex flex-column align-items-center justify-content-center">
+              <h4 class="section-heading mb-3">Practical Experience Rating</h4>
+          
+              <% if (certificate) { %>
+                <div class="mb-2">
+                  <strong>Company:</strong>
+                  <span><%= certificate.companyName || 'N/A' %></span>
+                </div>
+          
+                <div class="mb-3">
+                  <strong>Duration:</strong>
+                  <span><%= certificate.durationMonths || 'N/A' %> month(s)</span>
+                </div>
+          
+                <div class="mb-3">
+                  <strong>Rating:</strong>
+                  <div class="stars" style="margin-top: 8px; font-size: 20px; display: flex; justify-content: center; gap: 6px;">
+                    <% for (let i = 1; i <= 5; i++) { %>
+                      <% if (i <= certificate.experienceRating) { %>
+                        <span style="color: gold;">★</span>
+                      <% } else { %>
+                        <span class="empty-star" style="color: #ccc;">☆</span>
+                      <% } %>
+                    <% } %>
+                  </div>
+                </div>
+          
+                <div class="d-flex justify-content-center gap-2 flex-wrap mt-3">
+                  <a href="/certificates/view/<%= certificate.id %>" class="nav-btn-blue" target="_blank">
+                    View Certificate
+                  </a>
+                  <a href="/certificates" class="glass-btn">
+                    Add / Update Certificate
+                  </a>
+                </div>
+              <% } else { %>
+                <p class="mb-3">No certificate uploaded yet.</p>
+          
+                <a href="/certificates" class="nav-btn-blue">
+                  Add Certificate
+                </a>
+              <% } %>
             </div>
           </div>
           <div class="col-lg-6">

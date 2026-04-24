@@ -26,8 +26,9 @@
         <p class="hero-subtitle">
           A personalized summary of your skills, experience, internship fit, and skill gaps.
         </p>
+
         <div style="margin-top: 20px; display:flex; justify-content:center; gap:20px; flex-wrap:wrap;">
-           <a href="/student/career-report/pdf"
+          <a href="/student/career-report/pdf"
              style="
                 padding:10px 22px;
                 border-radius:25px;
@@ -41,13 +42,11 @@
                 transition: all 0.3s ease;
              "
              onmouseover="this.style.background='rgba(255,255,255,0.25)'"
-             onmouseout="this.style.background='rgba(255,255,255,0.12)'"
-           >
-             📄 Download PDF
-           </a>
+             onmouseout="this.style.background='rgba(255,255,255,0.12)'">
+            📄 Download PDF
+          </a>
 
-           <!-- CSV Button -->
-           <a href="/student/career-report/csv" 
+          <a href="/student/career-report/csv"
              style="
                padding:10px 22px;
                border-radius:25px;
@@ -60,15 +59,10 @@
                transition: all 0.3s ease;
             "
             onmouseover="this.style.background='rgba(0,255,150,0.3)'"
-            onmouseout="this.style.background='rgba(0,255,150,0.15)'"
-           >
-             📊 Download CSV
-           </a>
-
-        
-
+            onmouseout="this.style.background='rgba(0,255,150,0.15)'">
+            📊 Download CSV
+          </a>
         </div>
-        
       </div>
     </div>
 
@@ -107,6 +101,46 @@
     <h2 class="section-title">Experience</h2>
     <div class="glass-card" style="padding: 24px; margin-bottom: 24px;">
       <p><%= student.experience || 'No experience information added yet.' %></p>
+    </div>
+
+    <h2 class="section-title">Certificate & Practical Experience</h2>
+    <div class="glass-card" style="padding: 24px; margin-bottom: 24px;">
+      <% if (certificate) { %>
+        <div class="mb-2">
+          <strong>Company:</strong>
+          <span><%= certificate.companyName || 'N/A' %></span>
+        </div>
+
+        <div class="mb-3">
+          <strong>Internship Duration:</strong>
+          <span><%= certificate.durationMonths || 'N/A' %> month(s)</span>
+        </div>
+
+        <div class="mb-3">
+          <strong>Rating:</strong>
+          <div class="stars" style="margin-top: 8px; font-size: 20px;">
+            <% for (let i = 1; i <= 5; i++) { %>
+              <% if (i <= certificate.experienceRating) { %>
+                <span style="color: gold;">★</span>
+              <% } else { %>
+                <span class="empty-star" style="color: #ccc;">☆</span>
+              <% } %>
+            <% } %>
+          </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <a href="/certificates/view/<%= certificate.id %>" target="_blank" class="nav-btn-blue">
+            View Certificate
+          </a>
+        </div>
+      <% } else { %>
+        <p>No certificate information added yet.</p>
+
+        <a href="/certificates" class="nav-btn-blue">
+          Add Certificate
+        </a>
+      <% } %>
     </div>
 
     <h2 class="section-title">Recommended Internships</h2>

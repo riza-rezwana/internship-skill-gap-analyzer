@@ -7,8 +7,10 @@ const {
   downloadCareerReportCsv 
 } = require('../controllers/careerReportController');
 
-router.get('/career-report', getCareerReport);
-router.get('/career-report/pdf', downloadCareerReportPdf);
-router.get('/career-report/csv', downloadCareerReportCsv);
+const { ensureStudentAuth } = require('../middlewares/authMiddleware');
+
+router.get('/career-report', ensureStudentAuth, getCareerReport);
+router.get('/career-report/pdf', ensureStudentAuth, downloadCareerReportPdf);
+router.get('/career-report/csv', ensureStudentAuth, downloadCareerReportCsv);
 
 module.exports = router;
