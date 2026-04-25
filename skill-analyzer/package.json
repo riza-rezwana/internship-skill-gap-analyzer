@@ -1,0 +1,33 @@
+{
+  "name": "internship-skill-analyzer-merged",
+  "version": "1.0.0",
+  "description": "Unified Internship & Skill Analyzer application with local SQLite database, skill gap, matching, suggestions, and chatbot modules.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "postinstall": "prisma generate",
+    "seed": "node prisma/seed.js",
+    "setup": "npm run db:generate && npm run db:push && npm run seed",
+    "db:generate": "npx prisma generate",
+    "db:push": "npx prisma db push",
+    "db:reset": "npx prisma db push --force-reset && npm run seed",
+    "db:local": "node --no-warnings scripts/create-dev-db.js",
+    "db:studio": "npx prisma studio",
+    "validate": "npx prisma validate"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.0",
+    "express": "^4.18.2",
+    "express-handlebars": "^7.1.2"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1",
+    "prisma": "^5.22.0"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  }
+}

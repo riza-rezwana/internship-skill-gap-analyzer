@@ -1,0 +1,241 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/p1-client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model certificate {
+  id               Int      @id @default(autoincrement())
+  studentName      String
+  companyName      String
+  certificateFile  String
+  durationMonths   Int
+  experienceRating Int
+  createdAt        DateTime @default(now())
+}
+
+model student {
+  id                    Int       @id @default(autoincrement())
+  name                  String?
+  studentId             String?   @unique
+  firstName             String?
+  lastName              String?
+  email                 String?   @unique
+  password              String?
+  phone                 String?
+  country               String?
+  dateOfBirth           DateTime?
+  gender                String?
+  resume                String?
+  universityName        String?
+  university            String?
+  degree                String?
+  department            String?
+  semester              String?
+  cgpa                  String?
+  graduationYear        String?
+  experience            String?
+  locationPreferences   String?
+  sectorPreferences     String?
+  additionalInformation String?
+  targetRole            String?
+  bio                   String?
+  interests             String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  skills         studentSkill[]
+  courseProgress studentCourseProgress[]
+  chatSessions   chatSession[]
+}
+
+model company {
+  id                      Int      @id @default(autoincrement())
+  companyName             String
+  email                   String   @unique
+  password                String
+  registrationNumber      String?
+  industrySector          String?
+  companySize             String?
+  companyDescription      String?
+  companyWebsite          String?
+  contactPersonName       String?
+  designation             String?
+  phoneNumber             String?
+  officeAddress           String?
+  registrationCertificate String?
+  gstCertificate          String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  internships internship[]
+}
+
+model internship {
+  id                    Int      @id @default(autoincrement())
+  companyId             Int?
+  title                 String
+  companyName           String?
+  department            String?
+  location              String?
+  workMode              String?
+  isRemote              Boolean  @default(false)
+  durationMonths        Int?
+  duration              String?
+  stipend               Float?
+  roleDescription       String?
+  learningOutcomes      String?
+  numberOfPositions     Int      @default(1)
+  minimumDegreeLevel    String?
+  preferredFieldOfStudy String?
+  minimumGpaPercentage  String?
+  graduationYearRange   String?
+  additionalPreferences String?
+  status                String   @default("ACTIVE")
+  skillTags             String?
+  applyUrl              String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  company           company?                     @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  requiredSkills    internshipSkill[]
+  skillRequirements internshipSkillRequirement[]
+
+  @@index([companyId])
+}
+
+model skill {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  category    String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  studentSkills               studentSkill[]
+  internshipSkills            internshipSkill[]
+  internshipSkillRequirements internshipSkillRequirement[]
+  courseResources             courseResource[]
+}
+
+model studentSkill {
+  id          Int      @id @default(autoincrement())
+  studentId   Int
+  skillId     Int
+  level       Int      @default(3)
+  score       Float    @default(1)
+  chatScore   Int      @default(0)
+  isCompleted Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  student student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  skill   skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, skillId])
+  @@index([studentId])
+  @@index([skillId])
+  @@map("student_skills")
+}
+
+model internshipSkill {
+  id           Int @id @default(autoincrement())
+  internshipId Int
+  skillId      Int
+
+  internship internship @relation(fields: [internshipId], references: [id], onDelete: Cascade)
+  skill      skill      @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([internshipId, skillId])
+  @@index([internshipId])
+  @@index([skillId])
+  @@map("internship_skills")
+}
+
+model internshipSkillRequirement {
+  id            Int   @id @default(autoincrement())
+  internshipId  Int
+  skillId       Int
+  requiredScore Float @default(3)
+
+  internship internship @relation(fields: [internshipId], references: [id], onDelete: Cascade)
+  skill      skill      @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@unique([internshipId, skillId])
+  @@index([internshipId])
+  @@index([skillId])
+  @@map("internship_skill_requirements")
+}
+
+model courseResource {
+  id             Int      @id @default(autoincrement())
+  skillId        Int
+  title          String
+  platform       String
+  courseUrl      String
+  difficulty     String   @default("BEGINNER")
+  estimatedHours Float    @default(5)
+  description    String?
+  scoreBoost     Float    @default(0.5)
+  isActive       Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  skill           skill                   @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  studentProgress studentCourseProgress[]
+
+  @@index([skillId])
+  @@map("course_resources")
+}
+
+model studentCourseProgress {
+  id               Int       @id @default(autoincrement())
+  studentId        Int
+  courseResourceId Int
+  status           String    @default("NOT_STARTED")
+  scoreAwarded     Boolean   @default(false)
+  startedAt        DateTime?
+  completedAt      DateTime?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  student        student        @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  courseResource courseResource @relation(fields: [courseResourceId], references: [id], onDelete: Cascade)
+
+  @@unique([studentId, courseResourceId])
+  @@index([studentId])
+  @@index([courseResourceId])
+  @@map("student_course_progress")
+}
+
+model chatSession {
+  id         Int      @id @default(autoincrement())
+  studentId  Int
+  startedAt  DateTime @default(now())
+  lastActive DateTime @updatedAt
+  isActive   Boolean  @default(true)
+
+  student  student       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  messages chatMessage[]
+
+  @@index([studentId])
+  @@map("chat_sessions")
+}
+
+model chatMessage {
+  id        Int      @id @default(autoincrement())
+  sessionId Int
+  sender    String
+  message   String
+  intent    String?
+  createdAt DateTime @default(now())
+
+  session chatSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@map("chat_messages")
+}

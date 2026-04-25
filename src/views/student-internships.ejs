@@ -1,0 +1,83 @@
+<%- include('partials/header') %>
+
+<div class="portal-bg">
+  <div class="portal-overlay"></div>
+
+  <div class="portal-home-btn-wrap">
+    <a href="/" class="portal-home-btn" title="Home"><span>⌂</span></a>
+  </div>
+
+  <div class="portal-brand-left">Student<br>Portal</div>
+
+  <div class="container py-4">
+    <%- include('partials/alerts') %>
+
+    <div class="portal-page-wrap">
+      <div class="portal-page-heading text-center mb-4">
+        <h1 class="portal-main-title">Explore Internships</h1>
+        <p class="portal-main-subtitle">
+          Discover internship opportunities posted by industry partners.
+        </p>
+      </div>
+
+      <div class="register-shell">
+        <div class="dashboard-top-bar mb-4">
+          <div>
+            <h2 class="join-title mb-1">Available Opportunities</h2>
+            <p class="join-subtitle mb-0">Browse the latest internships</p>
+          </div>
+
+          <div class="dashboard-top-actions">
+            <a href="/external-jobs" class="nav-btn-blue">Live Jobs</a>
+            <a href="/student/dashboard" class="glass-btn">Back to Dashboard</a>
+          </div>
+        </div>
+
+        <% if (internships.length === 0) { %>
+          <div class="section-glass">
+            <div class="dashboard-text-box">No internships available right now.</div>
+          </div>
+        <% } else { %>
+          <div class="row g-4">
+            <% internships.forEach(internship => { %>
+              <div class="col-lg-6">
+                <div class="internship-feed-card">
+                  <div class="d-flex justify-content-between align-items-start gap-3 mb-2">
+                    <div>
+                      <h4 class="section-heading mb-1" style="font-size: 24px;"><%= internship.title %></h4>
+                      <div class="small-muted"><%= internship.company.companyName %></div>
+                    </div>
+                    <span class="feed-pill"><%= internship.workMode || 'N/A' %></span>
+                  </div>
+
+                  <div class="feed-meta">
+                    <span class="feed-pill"><%= internship.location || 'N/A' %></span>
+                    <span class="feed-pill"><%= internship.durationMonths || 'N/A' %> months</span>
+                    <span class="feed-pill">৳<%= internship.stipend || 0 %></span>
+                  </div>
+
+                  <div class="dashboard-text-box mb-3">
+                    <%= internship.roleDescription ? internship.roleDescription.substring(0, 180) : 'No description available' %>...
+                  </div>
+
+                  <p class="mb-3"><strong>Required Skills:</strong> <%= internship.requiredSkills || 'Not specified' %></p>
+
+                  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <span class="small-muted">
+                      Posted on <%= new Date(internship.createdAt).toDateString() %>
+                    </span>
+                    <a href="/student/internships/<%= internship.id %>" class="nav-btn-blue">
+                      View Details
+                    </a>
+                  </div>
+                </div>
+              </div>
+            <% }) %>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

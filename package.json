@@ -1,37 +1,45 @@
 {
-  "name": "internship-skill-gap-analyzer",
+  "name": "internship-skill-gap-analyzer-full-merged",
   "version": "1.0.0",
-  "description": "",
+  "description": "Merged runnable project containing the internship skill gap analyzer and the Internship & Skill Analyzer modules with separate non-conflicting databases.",
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "start": "node src/server.js"
+    "start": "node src/server.js",
+    "postinstall": "npm run prisma:generate:main && npm run prisma:generate:skill",
+    "prisma:generate:main": "prisma generate --schema prisma/schema.prisma",
+    "prisma:generate:skill": "prisma generate --schema skill-analyzer/prisma/schema.prisma",
+    "db:push": "prisma db push --schema prisma/schema.prisma",
+    "db:migrate": "prisma migrate deploy --schema prisma/schema.prisma",
+    "db:skill:push": "prisma db push --schema skill-analyzer/prisma/schema.prisma",
+    "db:skill:seed": "node skill-analyzer/prisma/seed.js",
+    "db:skill:local": "node --no-warnings skill-analyzer/scripts/create-dev-db.js",
+    "db:setup:skill": "npm run prisma:generate:skill && npm run db:skill:push && npm run db:skill:seed",
+    "check:skill-db": "node skill-analyzer/check_db.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/riza-rezwana/internship-skill-gap-analyzer.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/riza-rezwana/internship-skill-gap-analyzer/issues"
-  },
-  "homepage": "https://github.com/riza-rezwana/internship-skill-gap-analyzer#readme",
   "dependencies": {
+    "@prisma/adapter-mariadb": "^6.16.0",
     "@prisma/client": "^6.16.0",
     "bcrypt": "^6.0.0",
     "connect-flash": "^0.1.1",
+    "cors": "^2.8.5",
     "dotenv": "^17.3.1",
     "ejs": "^5.0.1",
     "express": "^5.2.1",
+    "express-handlebars": "^7.1.2",
     "express-session": "^1.19.0",
     "method-override": "^3.0.0",
     "multer": "^2.1.1",
     "mysql2": "^3.19.0",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^8.0.5",
+    "pdfkit": "^0.18.0",
     "prisma": "^6.16.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.14"
+  },
+  "prisma": {
+    "seed": "node skill-analyzer/prisma/seed.js"
   }
 }
