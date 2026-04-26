@@ -10,37 +10,51 @@
   <div class="page-wrapper">
     <div class="topbar">
       <div class="logo">✦ Student Portal</div>
-
       <div class="nav-pill">
         <a href="/" class="active">HOME</a>
         <a href="/student/internships">EXPLORE INTERNSHIPS</a>
         <a href="/external-jobs">LIVE JOBS</a>
-        
-        <a href="#">MY APPLICATIONS</a>
-        <!-- Student -->
         <a href="/student/register">REGISTER</a>
         <a href="/student/login">LOGIN</a>
         <a href="/student/dashboard">DASHBOARD</a>
-        <!--  ADD COMPANY HERE -->
         <a href="/company/register">COMPANY REGISTER</a>
         <a href="/company/login">COMPANY LOGIN</a>
       </div>
     </div>
 
-    <div class="home-hero">
+    <section class="home-hero">
       <div class="home-hero-content">
         <h1 class="hero-title">Internship + Skill Gap Analyzer</h1>
         <p class="hero-subtitle">
           Track practical experience, manage certificates, build internship readiness,
           and create your student profile for future success.
         </p>
-
         <div class="home-actions">
           <a href="/student/register" class="btn-primary-glow">Student Register</a>
           <a href="/student/login" class="btn-light-pill">Student Login</a>
         </div>
       </div>
-    </div>
+    </section>
+
+    <section class="module-gateway glass-card">
+      <div class="module-copy">
+        <span class="module-kicker">Integrated Main Modules</span>
+        <h2>Choose a member module</h2>
+        <p>Both modules share the same Prisma schema, one local database, and one Express app.</p>
+      </div>
+      <div class="module-bars">
+        <a class="module-bar" href="/member3">
+          <span>Member 3</span>
+          <strong>SKILL PROGRESS TRACKER</strong>
+          <small>Open 4 features: tracker, analytics, location filter, certificate generator</small>
+        </a>
+        <a class="module-bar" href="/member4">
+          <span>Member 4</span>
+          <strong>SKILL ANALYZER</strong>
+          <small>Open 4 features: skill gap, matching, suggestions, chatbot</small>
+        </a>
+      </div>
+    </section>
   </div>
 
   <div class="page-wrapper">
@@ -49,20 +63,20 @@
       A simple student journey from registration to profile building and internship readiness.
     </p>
 
-    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px;">
-      <div class="glass-card" style="padding: 24px;">
-        <h3 style="margin-bottom: 12px;">1. Create Account</h3>
+    <div class="how-grid">
+      <div class="glass-card step-card">
+        <h3>1. Create Account</h3>
         <p>Students register through a form and upload their resume for profile building.</p>
       </div>
 
-      <div class="glass-card" style="padding: 24px;">
-        <h3 style="margin-bottom: 12px;">2. Complete Profile</h3>
+      <div class="glass-card step-card">
+        <h3>2. Complete Profile</h3>
         <p>Add academic background, skills, preferences, and experience details.</p>
       </div>
 
-      <div class="glass-card" style="padding: 24px;">
-        <h3 style="margin-bottom: 12px;">3. Track Growth</h3>
-        <p>Use the dashboard to manage your student profile and prepare for internships.</p>
+      <div class="glass-card step-card">
+        <h3>3. Track Growth</h3>
+        <p>Use the dashboards to prepare for internships and improve missing skills.</p>
       </div>
     </div>
   </div>

@@ -9,13 +9,6 @@ const {
   logoutStudent
 } = require('../controllers/authController');
 
-console.log({
-  getStudentLogin,
-  getStudentRegister,
-  registerStudent,
-  loginStudent,
-  logoutStudent
-});
 
 router.get('/student/login', getStudentLogin);
 router.get('/student/register', getStudentRegister);
