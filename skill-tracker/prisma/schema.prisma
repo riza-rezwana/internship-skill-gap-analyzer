@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id               Int                    @id @default(autoincrement())
+  name             String
+  email            String                 @unique
+  major            String
+  enrollmentYear   Int
+  avatarInitials   String
+  createdAt        DateTime               @default(now())
+  skills           StudentSkill[]
+  completedCourses CompletedCourse[]
+  progressHistory  SkillProgressHistory[]
+}
+
+model Skill {
+  id              Int                    @id @default(autoincrement())
+  name            String                 @unique
+  category        String
+  icon            String
+  studentSkills   StudentSkill[]
+  courses         Course[]
+  progressHistory SkillProgressHistory[]
+}
+
+model StudentSkill {
+  id         Int      @id @default(autoincrement())
+  student    Student  @relation(fields: [studentId], references: [id])
+  studentId  Int
+  skill      Skill    @relation(fields: [skillId], references: [id])
+  skillId    Int
+  level      Int      @default(1)
+  updatedAt  DateTime @updatedAt
+
+  @@unique([studentId, skillId])
+}
+
+model Course {
+  id               Int               @id @default(autoincrement())
+  title            String
+  description      String
+  skill            Skill             @relation(fields: [skillId], references: [id])
+  skillId          Int
+  levelRequired    Int               @default(1)
+  levelGranted     Int               @default(1)
+  duration         String
+  completedCourses CompletedCourse[]
+}
+
+model CompletedCourse {
+  id          Int      @id @default(autoincrement())
+  student     Student  @relation(fields: [studentId], references: [id])
+  studentId   Int
+  course      Course   @relation(fields: [courseId], references: [id])
+  courseId    Int
+  completedAt DateTime @default(now())
+
+  @@unique([studentId, courseId])
+}
+
+model SkillProgressHistory {
+  id          Int      @id @default(autoincrement())
+  student     Student  @relation(fields: [studentId], references: [id])
+  studentId   Int
+  skill       Skill    @relation(fields: [skillId], references: [id])
+  skillId     Int
+  level       Int
+  recordedAt  DateTime @default(now())
+}
